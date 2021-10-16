@@ -1,0 +1,389 @@
+<div class="row shadow shadow-lg p-3 mx-1 mx-lg-5">
+	<div class="row my-5 shadow shadow-lg p-2">
+		<div class="col-8 display-5 fw-bold">
+			<span id="teamName"></span>
+			<span id="scoreAndWicket"></span>
+		</div>
+		<div class="text-end col-4 display-6" id="showOver"></div>
+	</div>
+	<div class="alert alert-warning h5 my-3" id="verdict"></div>
+	<table class="table table-hover display-6">
+		<thead>
+			<tr class="fw-bold">
+				<th>Batsmans</th>
+				<th>R</th>
+				<th>B</th>
+				<th>0s</th>
+				<th>4s</th>
+				<th>6s</th>
+				<th>SR</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="batsman1"></tr>
+			<tr id="batsman2"></tr>
+		</tbody>
+	</table>
+	<table class="table table-hover display-6">
+		<thead>
+			<tr class="fw-bold">
+				<th>Bowler</th>
+				<th>O</th>
+				<th>R</th>
+				<th>M</th>
+				<th>W</th>
+				<th>Eco</th>
+				<th>0s</th>
+				<th>4s</th>
+				<th>6s</th>
+				<th>Wd</th>
+				<th>Nb</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="bowler"></tr>
+		</tbody>
+	</table>
+	<div class="shadow shadow-lg bg-light p-2 my-3" id="over"></div>
+	<div class="score-counter d-none my-3">
+		<button type="button" class="btn btn-lg font-weight-bold btn-secondary m-2" data-bs-toggle="modal"
+			data-bs-target="#wide-wicket">
+			Wide + Wicket
+		</button>
+		<button type="button" class="btn btn-lg font-weight-bold btn-primary m-2" data-bs-toggle="modal"
+			data-bs-target="#bye">
+			Bye
+		</button>
+		<button type="button" class="btn btn-lg font-weight-bold btn-primary m-2" data-bs-toggle="modal"
+			data-bs-target="#leg-bye">
+			Leg-Bye
+		</button> <button type="button" class="btn btn-lg font-weight-bold btn-warning m-2" data-bs-toggle="modal"
+			data-bs-target="#no-ball">
+			No Ball
+		</button>
+	</div>
+	<div class="score-counter d-none my-1">
+		<button type="button" class="btn btn-lg rounded-circle btn-secondary m-2"
+			onclick="regularRunsCount('0')">0</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-primary m-2"
+			onclick="regularRunsCount('1')">1</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-primary m-2"
+			onclick="regularRunsCount('2')">2</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-primary m-2"
+			onclick="regularRunsCount('3')">3</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-success m-2"
+			onclick="regularRunsCount('4')">4</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-success m-2"
+			onclick="regularRunsCount('6')">6</button>
+		<a href="javascript:void(0)" class="m-2 text-secondary fw-bold display-5 text-decoration-none"
+			onclick="showHideRuns()"><i class="fas fa-angle-double-right"></i></a>
+		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="fiveRun"
+			onclick="regularRunsCount('5')">5</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="sevenRun"
+			onclick="regularRunsCount('7')">7</button>
+		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="eightRun"
+			onclick="regularRunsCount('8')">8</button>
+	</div>
+	<div class="score-counter d-none my-1">
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('bowled')">Bowled</button>
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('lbw')">LBW</button>
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="caughtOut()">Caught</button>
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="stumpedOut()">Stumped</button>
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="runOut()">Run Out</button>
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('hw')">Hit
+			Wicket</button>
+	</div>
+	<div class="score-counter d-none my-1 text-end">
+		<button type="button" class="btn btn-lg rounded-pill btn-secondary m-2" onclick="undoState()"><i
+				class="fas fa-undo-alt"></i> Undo</button>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="wide">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Wide ball</h5>
+			</div>
+			<div class="modal-body">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="w_rb" value="0" id="w_no_run" checked>
+					<label class="form-check-label" for="w_no_run">No run</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="w_rb" value="1" id="w_oneW">
+					<label class="form-check-label" for="w_oneW">1b</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="w_rb" value="2" id="w_twoB">
+					<label class="form-check-label" for="w_twoB">2b</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="w_rb" value="3" id="w_threeB">
+					<label class="form-check-label" for="w_threeB">3b</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="w_rb" value="4" id="w_fourB">
+					<label class="form-check-label" for="w_fourB">4b</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="wideCount()">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="no-ball">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">No ball</h5>
+			</div>
+			<div class="modal-body">
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="0">
+					<label class="form-check-label h5 ms-2 mt-2">no run</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="1">
+					<label class="form-check-label h5 ms-2 mt-2">1</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="2">
+					<label class="form-check-label h5 ms-2 mt-2">2</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="3">
+					<label class="form-check-label h5 ms-2 mt-2">3</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="lb">
+					<label class="form-check-label h5 ms-2 mt-2">lb</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="4">
+					<label class="form-check-label h5 ms-2 mt-2">four</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="5">
+					<label class="form-check-label h5 ms-2 mt-2">5</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="6">
+					<label class="form-check-label h5 ms-2 mt-2">six</label>
+				</div>
+				<div class="form-check-nb">
+					<input class="form-check-input nb-checkbox" type="checkbox" value="run-out">
+					<label class="form-check-label h5 ms-2 mt-2">run out</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="noBallCount" data-bs-dismiss="modal"
+					onclick="noBallCount()">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="bye">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Bye</h5>
+			</div>
+			<div class="modal-body">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="b_rb" value="1" id="oneB" checked>
+					<label class="form-check-label" for="oneB">1b</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="b_rb" value="2" id="twoB">
+					<label class="form-check-label" for="twoB">2b</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="b_rb" value="3" id="threeB">
+					<label class="form-check-label" for="threeB">3b</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="b_rb" value="4" id="fourB">
+					<label class="form-check-label" for="fourB">4b</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="byeCount()">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="leg-bye">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Leg Bye</h5>
+			</div>
+			<div class="modal-body">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="lb_rb" value="1" id="oneLb" checked>
+					<label class="form-check-label" for="oneLb">1lb</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="lb_rb" value="2" id="twoLb">
+					<label class="form-check-label" for="twoLb">2lb</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="lb_rb" value="3" id="threeLb">
+					<label class="form-check-label" for="threeLb">3lb</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="lb_rb" value="4" id="fourLb">
+					<label class="form-check-label" for="fourLb">4lb</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal"
+					onclick="legByeCount()">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="caught-out">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Caught Out</h5>
+			</div>
+			<div class="modal-body">
+				<div>
+					<label class="form-label text-success h5">Who got out?</label>
+					<select class="form-control" id="whoGotOutOption_c"></select>
+				</div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">On which strike?</label>
+					<select class="form-control" id="onWhichStrike">
+						<option value="onStrike">On strike</option>
+						<option value="nonStrike">Non strike</option>
+					</select>
+				</div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">Caught by:</label>
+					<select class="form-control" id="caughtByOption"></select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="caughtBy" data-bs-dismiss="modal">Caught</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="run-out">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Run Out</h5>
+			</div>
+			<div class="modal-body">
+				<div>
+					<label class="form-label text-success h5">Who got out?</label>
+					<select class="form-control" id="whoGotOutOption_r"></select>
+				</div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">Run-out by:</label>
+					<select class="form-control" id="runOutByOption"></select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="runOutBy" data-bs-dismiss="modal">Run-out</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="stumped-out">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Stumped By</h5>
+			</div>
+			<div class="modal-body">
+				<select class="form-control" id="stumpedByOption"></select>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="stumpedBy" data-bs-dismiss="modal">Stumped</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="wide-wicket">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Wide and wicket</h5>
+			</div>
+			<div class="modal-body">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="ww_rb" value="stumping" id="stumping" checked>
+					<label class="form-check-label" for="stumping">Stumping</label>
+				</div>
+				<div class="form-check mt-3">
+					<input class="form-check-input" type="radio" name="ww_rb" value="hit-wicket" id="hit-wicket">
+					<label class="form-check-label" for="hit-wicket">Hit wicket</label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal"
+					onclick="wideAndWicket()">Dismiss</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="new-batsman">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div id="batting-modal-message" class="my-2 display-6"></div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">Chose new batsman:</label>
+					<select class="form-control" id="newBatsman"></select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="setnewBatsman">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="new-bowler">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Chose new bowler</h5>
+			</div>
+			<div class="modal-body">
+				<select class="form-control" id="newBowler"></select>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="setNewBowler">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="second-innings-modal">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div id="second-innings-message" class="my-2 display-6"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" id="proceed">Proceed</button>
+			</div>
+		</div>
+	</div>
+</div>
