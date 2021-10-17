@@ -17,11 +17,7 @@ let matchDetailsSetup = () => {
 	};
 
 	localStorage.setItem("match", JSON.stringify(match));
-	view("toss.html");
-	setTimeout(() => {
-		console.log("toss loaded");
-		setDomToss();
-	}, 250);
+	view("toss.html", setDomToss);
 };
 
 let setDomToss = () => {
@@ -89,11 +85,7 @@ let tossOverAndPlay = () => {
 	match.noOfPlayers = document.querySelector("#players").value;
 
 	localStorage.setItem("match", JSON.stringify(match));
-	view("lineup.html");
-	setTimeout(() => {
-		console.log("lineup loaded");
-		setDomLineUp();
-	}, 250);
+	view("lineup.html", setDomLineUp);
 };
 
 let setDomOpeners = () => {
@@ -180,11 +172,7 @@ let lineUpSetup = () => {
 	match.runningInnings = 0;
 
 	localStorage.setItem("match", JSON.stringify(match));
-	view("openers.html");
-	setTimeout(() => {
-		console.log("openers loaded");
-		setDomOpeners();
-	}, 250);
+	view("openers.html", setDomOpeners);
 };
 
 let setOpeners = () => {
@@ -199,9 +187,8 @@ let setOpeners = () => {
 	match.onStrikeBowler = onStrikeBowler;
 
 	localStorage.setItem("match", JSON.stringify(match));
-	view("play.html");
+	view("play.html", loadScore);
 	setTimeout(() => {
-		loadScore();
 		if (
 			document
 				.querySelectorAll(".score-counter")[0]
@@ -211,7 +198,7 @@ let setOpeners = () => {
 				yy.classList.remove("d-none");
 			}
 		}
-	}, 500);
+	}, 1000);
 };
 
 let showHideRuns = () => {

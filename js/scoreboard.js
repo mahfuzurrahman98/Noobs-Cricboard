@@ -53,11 +53,7 @@ let getVerdict = () => {
 				for (yy of document.querySelectorAll(".score-counter")) {
 					yy.classList.add("d-none");
 				}
-				view("openers.html");
-				setTimeout(() => {
-					console.log("openers loaded");
-					setDomOpeners();
-				}, 250);
+				view("openers.html", setDomOpeners);
 			});
 		}
 	}
@@ -299,6 +295,7 @@ let newBowler = () => {
 	document.querySelector("#setNewBowler").addEventListener("click", () => {
 		match.onStrikeBowler = document.querySelector("#newBowler").value;
 		localStorage.setItem("match", JSON.stringify(match));
+		loadScore();
 	});
 };
 
@@ -353,11 +350,11 @@ let overCompletionCheck = () => {
 			match.onStrikeBatsman,
 		];
 		match.teamScoreboard[track].curOver = [];
+		localStorage.setItem("match", JSON.stringify(match));
 		// get a new bowler
-		console.log("flag:", match.verdictFlag);
 		if (match.verdictFlag % 2 == 1) {
 			console.log("overcc");
-			setTimeout(() => newBowler(), 1000);
+			newBowler();
 		}
 	}
 };
