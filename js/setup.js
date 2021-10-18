@@ -9,6 +9,18 @@ let matchDetailsSetup = () => {
 	let venue = document.querySelector("#venue").value;
 	let startTime = document.querySelector("#startTime").value;
 
+	if (
+		title == "" ||
+		teamOne == "" ||
+		teamTwo == "" ||
+		venue == "" ||
+		startTime == ""
+	) {
+		new bootstrap.Modal(document.querySelector("#error-modal")).show();
+		document.querySelector("#error-msg").innerHTML = "Empty field";
+		return;
+	}
+
 	match = {
 		title: title.trim(),
 		teams: [teamOne.trim(), teamTwo.trim()],
@@ -111,6 +123,17 @@ let setDomOpeners = () => {
 let lineUpSetup = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 
+	for (let i = 0; i < match.noOfPlayers; i++) {
+		if (
+			document.querySelector(`#team1-${i + 1}`).value == "" ||
+			document.querySelector(`#team2-${i + 1}`).value == ""
+		) {
+			new bootstrap.Modal(document.querySelector("#error-modal")).show();
+			document.querySelector("#error-msg").innerHTML = "Empty field";
+			return;
+		}
+	}
+
 	match.teamLineUp = [[], []];
 	match.teamScoreboard = [[], []];
 
@@ -182,6 +205,12 @@ let setOpeners = () => {
 	let nonStrikeBatsman = document.querySelector("#nonStrike").value;
 	let onStrikeBowler = document.querySelector("#onStrikeBowler").value;
 
+	if (onStrikeBatsman == nonStrikeBatsman) {
+		new bootstrap.Modal(document.querySelector("#error-modal")).show();
+		document.querySelector("#error-msg").innerHTML =
+			"Choose different batsmen for both ends";
+		return;
+	}
 	match.onStrikeBatsman = onStrikeBatsman;
 	match.nonStrikeBatsman = nonStrikeBatsman;
 	match.onStrikeBowler = onStrikeBowler;
@@ -201,8 +230,17 @@ let setOpeners = () => {
 	}, 1000);
 };
 
+let newMatch = () => {
+	localStorage.clear();
+	view("details.html", () => {});
+};
+
 let showHideRuns = () => {
 	document.querySelector("#fiveRun").classList.toggle("d-none");
 	document.querySelector("#sevenRun").classList.toggle("d-none");
 	document.querySelector("#eightRun").classList.toggle("d-none");
+};
+
+let loadAbout = () => {
+	view("about.html", () => {});
 };

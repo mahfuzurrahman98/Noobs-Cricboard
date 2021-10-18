@@ -217,7 +217,7 @@ let loadScore = () => {
 	).innerHTML = `${match.teamScoreboard[track].totalRunScored} / ${match.teamScoreboard[track].wicketFall}`;
 	document.querySelector("#showOver").innerHTML = `Overs: ${parseInt(
 		match.teamScoreboard[track].ballsPlayed / 6
-	)}.${match.teamScoreboard[track].ballsPlayed % 6}`;
+	)}.${match.teamScoreboard[track].ballsPlayed % 6}(${match.noOfOvers})`;
 
 	document.querySelector("#batsman1").innerHTML = displaybatsman1;
 	document.querySelector("#batsman2").innerHTML = displaybatsman2;
