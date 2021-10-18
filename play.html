@@ -46,19 +46,16 @@
 	</table>
 	<div class="shadow shadow-lg bg-light p-2 my-3" id="over"></div>
 	<div class="score-counter d-none my-3">
-		<button type="button" class="btn btn-lg font-weight-bold btn-secondary m-2" data-bs-toggle="modal"
-			data-bs-target="#wide-wicket">
+		<button type="button" class="btn btn-lg btn-secondary m-2" data-bs-toggle="modal" data-bs-target="#wide-wicket">
 			Wide + Wicket
 		</button>
-		<button type="button" class="btn btn-lg font-weight-bold btn-primary m-2" data-bs-toggle="modal"
-			data-bs-target="#bye">
+		<button type="button" class="btn btn-lg btn-primary m-2" data-bs-toggle="modal" data-bs-target="#bye">
 			Bye
 		</button>
-		<button type="button" class="btn btn-lg font-weight-bold btn-primary m-2" data-bs-toggle="modal"
-			data-bs-target="#leg-bye">
+		<button type="button" class="btn btn-lg btn-primary m-2" data-bs-toggle="modal" data-bs-target="#leg-bye">
 			Leg-Bye
-		</button> <button type="button" class="btn btn-lg font-weight-bold btn-warning m-2" data-bs-toggle="modal"
-			data-bs-target="#no-ball">
+		</button>
+		<button type="button" class="btn btn-lg btn-warning m-2" id="nb-modal" onclick="noBallModal()">
 			No Ball
 		</button>
 	</div>
@@ -81,8 +78,6 @@
 			onclick="regularRunsCount('5')">5</button>
 		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="sevenRun"
 			onclick="regularRunsCount('7')">7</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="eightRun"
-			onclick="regularRunsCount('8')">8</button>
 	</div>
 	<div class="score-counter d-none my-1">
 		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('bowled')">Bowled</button>
@@ -141,41 +136,45 @@
 				<h5 class="modal-title">No ball</h5>
 			</div>
 			<div class="modal-body">
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="0">
-					<label class="form-check-label h5 ms-2 mt-2">no run</label>
+				<div>
+					<label class="form-label text-success h5">Runs Taken:</label>
+					<select class="form-control" id="runsTaken_nb">
+						<option value="0">No run</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+					</select>
 				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="1">
-					<label class="form-check-label h5 ms-2 mt-2">1</label>
+				<div class="mt-3 d-none" id="nb_runs_from_div">
+					<label class="form-label text-success h5">Runs from:</label>
+					<select class="form-control" id="runsFrom_nb">
+						<option value="bat">bat</option>
+						<option value="bye">bye</option>
+						<option value="lb">leg-bye</option>
+					</select>
 				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="2">
-					<label class="form-check-label h5 ms-2 mt-2">2</label>
+				<div class="form-check form-switch mt-3">
+					<input class="form-check-input" type="checkbox" id="isRunOut">
+					<label class="form-check-label" for="isRunOut">Run out</label>
 				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="3">
-					<label class="form-check-label h5 ms-2 mt-2">3</label>
+				<div class="mt-3 d-none" id="nb_who_got_out_div">
+					<label class="form-label text-success h5">Who got out?</label>
+					<select class="form-control" id="whoGotOutOption_nb"></select>
 				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="lb">
-					<label class="form-check-label h5 ms-2 mt-2">lb</label>
+				<div class="mt-3 d-none" id="nb_on_which_end_div">
+					<label class="form-label text-success h5">On which end?</label>
+					<select class="form-control" id="onWhichEnd_nb">
+						<option value="keeperEnd">Keeper's end</option>
+						<option value="bowlerEnd">Bowler's end</option>
+					</select>
 				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="4">
-					<label class="form-check-label h5 ms-2 mt-2">four</label>
-				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="5">
-					<label class="form-check-label h5 ms-2 mt-2">5</label>
-				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="6">
-					<label class="form-check-label h5 ms-2 mt-2">six</label>
-				</div>
-				<div class="form-check-nb">
-					<input class="form-check-input nb-checkbox" type="checkbox" value="run-out">
-					<label class="form-check-label h5 ms-2 mt-2">run out</label>
+				<div class="mt-3 d-none" id="nb_run_out_by">
+					<label class="form-label text-success h5">Run out by:</label>
+					<select class="form-control" id="runOutByOption_nb"></select>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -261,10 +260,10 @@
 					<select class="form-control" id="whoGotOutOption_c"></select>
 				</div>
 				<div class="mt-3">
-					<label class="form-label text-success h5">On which strike?</label>
-					<select class="form-control" id="onWhichStrike">
-						<option value="onStrike">On strike</option>
-						<option value="nonStrike">Non strike</option>
+					<label class="form-label text-success h5">On which end?</label>
+					<select class="form-control" id="onWhichEnd_c">
+						<option value="keeperEnd">Keeper's end</option>
+						<option value="bowlerEnd">Bowler's end</option>
 					</select>
 				</div>
 				<div class="mt-3">
@@ -287,8 +286,27 @@
 			</div>
 			<div class="modal-body">
 				<div>
+					<label class="form-label text-success h5">Runs taken:</label>
+					<select class="form-control" id="runsTaken_r">
+						<option value="0">No run</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+					</select>
+				</div>
+				<div class="mt-3">
 					<label class="form-label text-success h5">Who got out?</label>
 					<select class="form-control" id="whoGotOutOption_r"></select>
+				</div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">On which end?</label>
+					<select class="form-control" id="onWhichEnd_r">
+						<option value="keeperEnd">Keeper's end</option>
+						<option value="bowlerEnd">Bowler's end</option>
+					</select>
 				</div>
 				<div class="mt-3">
 					<label class="form-label text-success h5">Run-out by:</label>

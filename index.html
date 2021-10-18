@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noobs Cricboard</title>
+  <link rel="icon" href="images/cricket (1).png">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="fontawesome/css/all.min.css">
@@ -27,12 +28,21 @@
     <div class="collapse navbar-collapse" id="nbcollapse">
       <ul class="navbar-nav my-2 my-lg-0">
         <li class="nav-item mx-auto">
-          <a class="nav-link active rounded-pill text-success" aria-current="page" href="javascript:void(0)"
+          <a class="nav-link active rounded-pill text-primary" aria-current="page" href="javascript:void(0)"
             onclick="newMatch()">
             <span>
               <img src="images/match.png" width="35" height="35" alt="">
             </span>
             <span> New match</span>
+          </a>
+        </li>
+        <li class="nav-item mx-auto">
+          <a class="nav-link active rounded-pill text-success" aria-current="page" href="javascript:void(0)"
+            onclick="loadMatch()">
+            <span>
+              <img src="images/running_match.png" width="35" height="35" alt="">
+            </span>
+            <span> Running match</span>
           </a>
         </li>
       </ul>

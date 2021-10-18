@@ -24,7 +24,7 @@ let loadScoreModified = () => {
 	}
 };
 
-window.addEventListener("load", () => {
+let loadMatch = () => {
 	if (localStorage.getItem("match") === null) {
 		view("details.html", () => {});
 	} else {
@@ -39,4 +39,8 @@ window.addEventListener("load", () => {
 			view("toss.html", setDomToss);
 		}
 	}
+};
+
+window.addEventListener("load", () => {
+	loadMatch();
 });

@@ -238,7 +238,6 @@ let newMatch = () => {
 let showHideRuns = () => {
 	document.querySelector("#fiveRun").classList.toggle("d-none");
 	document.querySelector("#sevenRun").classList.toggle("d-none");
-	document.querySelector("#eightRun").classList.toggle("d-none");
 };
 
 let loadAbout = () => {

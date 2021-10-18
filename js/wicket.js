@@ -37,6 +37,7 @@ let dismiss = (x) => {
 
 	localStorage.setItem("match", JSON.stringify(match));
 	newBatsman();
+	overCompletionCheck();
 };
 
 let stumpedOut = () => {
@@ -86,6 +87,7 @@ let stumpedOut = () => {
 
 		localStorage.setItem("match", JSON.stringify(match));
 		newBatsman();
+		overCompletionCheck();
 	});
 };
 
@@ -111,9 +113,9 @@ let caughtOut = () => {
 	document.querySelector("#caughtByOption").innerHTML = elevenOption;
 
 	document.querySelector("#caughtBy").addEventListener("click", () => {
-		let whoGotOut = document.querySelector("#whoGotOutOption_c").value;
 		let batsmanId = match.teamLineUp[track].findIndex(
-			(playerObj) => playerObj.name == whoGotOut
+			(playerObj) =>
+				playerObj.name == document.querySelector("#whoGotOutOption_c").value
 		);
 		match.lastBatsman = document.querySelector("#whoGotOutOption_c").value;
 
@@ -168,16 +170,12 @@ let caughtOut = () => {
 			document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 			document.querySelector("#setnewBatsman").addEventListener("click", () => {
-				if (whoGotOut == match.onStrikeBatsman) {
+				if (document.querySelector("#onWhichEnd_c").value == "keeperEnd") {
 					match.onStrikeBatsman = document.querySelector("#newBatsman").value;
 				} else {
 					match.nonStrikeBatsman = document.querySelector("#newBatsman").value;
 				}
 
-				if (isOverCompleted()) {
-					match.lastBowler = match.onStrikeBowler;
-					match.onStrikeBowler = "";
-				}
 				localStorage.setItem("match", JSON.stringify(match));
 				loadScore();
 				overCompletionCheck();
@@ -209,6 +207,7 @@ let runOut = () => {
 	document.querySelector("#runOutByOption").innerHTML = elevenOption;
 
 	document.querySelector("#runOutBy").addEventListener("click", () => {
+		let runTaken = parseInt(document.querySelector("#runsTaken_r").value);
 		let batsmanId = match.teamLineUp[track].findIndex(
 			(playerObj) =>
 				playerObj.name == document.querySelector("#whoGotOutOption_r").value
@@ -220,17 +219,22 @@ let runOut = () => {
 		}</b> run out (<b>${document.querySelector("#runOutByOption").value}</b>)`;
 
 		// batting team scoreboard
+		match.teamScoreboard[track].totalRunScored += runTaken;
 		match.teamScoreboard[track].ballsPlayed++;
 		match.teamScoreboard[track].wicketFall++;
-		match.teamScoreboard[track].curOver.push("W");
+		match.teamScoreboard[track].curOver.push(runTaken + "W");
 
 		// batsman profile
+		match.teamLineUp[track][batsmanId].runScored += runTaken;
 		match.teamLineUp[track][batsmanId].ballFaced++;
 		match.teamLineUp[track][batsmanId].gotOut = true;
 
 		// bowler profile
 		match.teamLineUp[1 - track][bowlerId].ballBowled++;
-		match.teamLineUp[1 - track][bowlerId].dotGiven++;
+		match.teamLineUp[1 - track][bowlerId].runGiven++;
+		if (runTaken == 0) {
+			match.teamLineUp[1 - track][bowlerId].dotGiven++;
+		}
 
 		if (match.teamScoreboard[track].wicketFall + 1 == match.noOfPlayers) {
 			// all out
@@ -255,7 +259,11 @@ let runOut = () => {
 			document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 			document.querySelector("#setnewBatsman").addEventListener("click", () => {
-				match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+				if (document.querySelector("#onWhichEnd_r").value == "keeperEnd") {
+					match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+				} else {
+					match.nonStrikeBatsman = document.querySelector("#newBatsman").value;
+				}
 
 				localStorage.setItem("match", JSON.stringify(match));
 				loadScore();
