@@ -7,9 +7,19 @@ let getVerdict = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 	let track = match.batting == match.teams[0] ? 0 : 1;
 	let firstInningsOver = false;
+	let crr = (
+		(match.teamScoreboard[track].totalRunScored /
+			match.teamScoreboard[track].ballsPlayed) *
+		6
+	).toFixed(2);
+	if (match.teamScoreboard[track].ballsPlayed == 0) {
+		crr = "0.00";
+	}
+
 	match.verdictFlag = 1;
 	// first innings
 	if (match.runningInnings == 0) {
+		match.verdict = `Current run rate: ${crr}`;
 		let prevMsg = "";
 		if (
 			// if all out
@@ -71,6 +81,8 @@ let getVerdict = () => {
 			1;
 		let remBowls =
 			match.noOfOvers * 6 - match.teamScoreboard[track].ballsPlayed;
+		let rr = ((runsNeeded / remBowls) * 6).toFixed(2);
+
 		if (
 			match.teamScoreboard[track].totalRunScored ==
 			match.teamScoreboard[1 - track].totalRunScored
@@ -81,12 +93,7 @@ let getVerdict = () => {
 				remBowls > 0
 			) {
 				//match running
-				match.verdict = `Score is level, needs 1 run to win from ${parseInt(
-					remBowls / 6
-				)}.${parseInt(remBowls % 6)} overs at a rate of ${(
-					(runsNeeded / remBowls) *
-					6
-				).toFixed(2)} per over.`;
+				match.verdict = `current rate: ${crr} | score is level, needs 1 run from ${remBowls} balls | required rate: ${rr}`;
 			} else if (
 				match.teamScoreboard[track].wicketFall + 1 == match.noOfPlayers ||
 				remBowls == 0
@@ -116,12 +123,7 @@ let getVerdict = () => {
 				match.teamScoreboard[track].wicketFall + 1 < match.noOfPlayers &&
 				remBowls > 0
 			) {
-				match.verdict = `Needs ${runsNeeded} runs to win from ${parseInt(
-					remBowls / 6
-				)}.${parseInt(remBowls % 6)} overs at a rate of ${(
-					(runsNeeded / remBowls) *
-					6
-				).toFixed(2)} per over.`;
+				match.verdict = `current rate: ${crr} | needs ${runsNeeded} runs from ${remBowls} balls | required rate: ${rr}`;
 			}
 		} else if (
 			match.teamScoreboard[track].totalRunScored >
@@ -136,14 +138,26 @@ let getVerdict = () => {
 				yy.classList.add("d-none");
 			}
 		}
-		document.querySelector("#verdict").innerHTML = match.verdict;
 	}
+	document.querySelector("#verdict").innerHTML = match.verdict;
 	localStorage.setItem("match", JSON.stringify(match));
 };
 
 let loadScore = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 	let track = match.batting == match.teams[0] ? 0 : 1;
+	let options = {
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	};
+	let date_time = new Date(match.startTime);
+	date_time = date_time.toLocaleDateString("en-US", options);
+
+	document.querySelector(
+		"#match-heading"
+	).innerHTML = `${match.title} <span class="text-dark fw-bold">|</span> ${date_time} <span class="text-dark fw-bold">|</span> ${match.teams[0]} vs ${match.teams[1]} <span class="text-dark fw-bold">|</span> ${match.venue}`;
 
 	let batsmanId1 = match.teamLineUp[track].findIndex(
 		(playerObj) => playerObj.name == match.onStrikeBatsman
@@ -226,15 +240,11 @@ let loadScore = () => {
 	document.querySelector("#over").innerHTML = "";
 	for (let j of match.teamScoreboard[track].curOver) {
 		let newBowl = document.createElement("span");
-		newBowl.classList.add(
-			"display-5",
-			"btn",
-			"btn-lg",
-			"btn-outline-secondary",
-			"fw-bold",
-			"rounded-circle",
-			"mx-1"
-		);
+		let bowl_btn_cls = "btn-outline-secondary";
+		if (j.includes("W")) {
+			bowl_btn_cls = "btn-outline-danger";
+		}
+		newBowl.classList.add("btn", bowl_btn_cls, "rounded-circle", "mx-1");
 		newBowl.innerText = j;
 		document.querySelector("#over").appendChild(newBowl);
 	}

@@ -1,16 +1,62 @@
-<div class="row shadow shadow-lg p-3 mx-1 mx-lg-5">
-	<div class="row my-5 shadow shadow-lg p-2">
-		<div class="col-8 display-5 fw-bold">
-			<span id="teamName"></span>
-			<span id="scoreAndWicket"></span>
+<div id="match-heading" class="my-4 text-primary h5 mx-lg-5 px-2"></div>
+
+<div class="shadow shadow-lg mx-lg-5 px-2">
+	<div class="row py-2">
+		<div class="col-7 fw-bold">
+			<span id="teamName" class="h4"></span>
+			<span id="scoreAndWicket" class="h4"></span>
 		</div>
-		<div class="text-end col-4 display-6" id="showOver"></div>
+		<div class="text-end col-5 h4" id="showOver"></div>
+		<div class="col-12 mt-1">
+			<div class="alert alert-warning p-1" id="verdict"></div>
+		</div>
 	</div>
-	<div class="alert alert-warning h5 my-3" id="verdict"></div>
-	<table class="table table-hover display-6">
+
+	<div class="score-counter d-none">
+		<button type="button" class="btn  rounded-circle btn-secondary m-2" onclick="regularRunsCount('0')">0</button>
+		<button type="button" class="btn  rounded-circle btn-primary m-2" onclick="regularRunsCount('1')">1</button>
+		<button type="button" class="btn  rounded-circle btn-primary m-2" onclick="regularRunsCount('2')">2</button>
+		<button type="button" class="btn  rounded-circle btn-primary m-2" onclick="regularRunsCount('3')">3</button>
+		<button type="button" class="btn  rounded-circle btn-success m-2" onclick="regularRunsCount('4')">4</button>
+		<button type="button" class="btn  rounded-circle btn-success m-2" onclick="regularRunsCount('6')">6</button>
+		<a href="javascript:void(0)" class="m-2 text-secondary fw-bold text-decoration-none" onclick="showHideRuns()"><i
+				class="fas fa-angle-double-right fa-2x"></i></a>
+		<button type="button" class="btn  rounded-circle btn-dark m-2 d-none" id="fiveRun"
+			onclick="regularRunsCount('5')">5</button>
+		<button type="button" class="btn  rounded-circle btn-dark m-2 d-none" id="sevenRun"
+			onclick="regularRunsCount('7')">7</button>
+	</div>
+	<div class="score-counter d-none my-3">
+		<button type="button" class="btn  btn-primary m-2" data-bs-toggle="modal" data-bs-target="#bye">
+			Bye
+		</button>
+		<button type="button" class="btn  btn-primary m-2" data-bs-toggle="modal" data-bs-target="#leg-bye">
+			Leg-Bye
+		</button>
+		<button type="button" class="btn  btn-secondary m-2" onclick="wideBallModal()">
+			Wide ball
+		</button>
+		<button type="button" class="btn  btn-warning m-2" onclick="noBallModal()">
+			No Ball
+		</button>
+	</div>
+	<div class="score-counter d-none my-1">
+		<button type="button" class="btn  rounded-pill btn-danger m-2" onclick="dismiss('bowled')">Bowled</button>
+		<button type="button" class="btn  rounded-pill btn-danger m-2" onclick="dismiss('lbw')">LBW</button>
+		<button type="button" class="btn  rounded-pill btn-danger m-2" onclick="caughtOut()">Caught</button>
+		<button type="button" class="btn  rounded-pill btn-danger m-2" onclick="stumpedOut()">Stumped</button>
+		<button type="button" class="btn  rounded-pill btn-danger m-2" onclick="runOutModal()">Run Out</button>
+		<button type="button" class="btn  rounded-pill btn-danger m-2" onclick="dismiss('hw')">Hit
+			Wicket</button>
+	</div>
+	<div class="shadow shadow-lg p-1 my-3">
+		<span class="h5">This over:</span>
+		<span class="bg-light p-2 my-3" id="over"></span>
+	</div>
+	<table class="table table-hover mt-3">
 		<thead>
 			<tr class="fw-bold">
-				<th>Batsmans</th>
+				<th>Bats.</th>
 				<th>R</th>
 				<th>B</th>
 				<th>0s</th>
@@ -24,10 +70,10 @@
 			<tr id="batsman2"></tr>
 		</tbody>
 	</table>
-	<table class="table table-hover display-6">
+	<table class="table table-hover">
 		<thead>
 			<tr class="fw-bold">
-				<th>Bowler</th>
+				<th>Bowl.</th>
 				<th>O</th>
 				<th>R</th>
 				<th>M</th>
@@ -44,54 +90,10 @@
 			<tr id="bowler"></tr>
 		</tbody>
 	</table>
-	<div class="shadow shadow-lg bg-light p-2 my-3" id="over"></div>
-	<div class="score-counter d-none my-3">
-		<button type="button" class="btn btn-lg btn-secondary m-2" data-bs-toggle="modal" data-bs-target="#wide-ball">
-			Wide ball
-		</button>
-		<button type="button" class="btn btn-lg btn-primary m-2" data-bs-toggle="modal" data-bs-target="#bye">
-			Bye
-		</button>
-		<button type="button" class="btn btn-lg btn-primary m-2" data-bs-toggle="modal" data-bs-target="#leg-bye">
-			Leg-Bye
-		</button>
-		<button type="button" class="btn btn-lg btn-warning m-2" id="nb-modal" onclick="noBallModal()">
-			No Ball
-		</button>
-	</div>
-	<div class="score-counter d-none my-1">
-		<button type="button" class="btn btn-lg rounded-circle btn-secondary m-2"
-			onclick="regularRunsCount('0')">0</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-primary m-2"
-			onclick="regularRunsCount('1')">1</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-primary m-2"
-			onclick="regularRunsCount('2')">2</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-primary m-2"
-			onclick="regularRunsCount('3')">3</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-success m-2"
-			onclick="regularRunsCount('4')">4</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-success m-2"
-			onclick="regularRunsCount('6')">6</button>
-		<a href="javascript:void(0)" class="m-2 text-secondary fw-bold display-5 text-decoration-none"
-			onclick="showHideRuns()"><i class="fas fa-angle-double-right"></i></a>
-		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="fiveRun"
-			onclick="regularRunsCount('5')">5</button>
-		<button type="button" class="btn btn-lg rounded-circle btn-dark m-2 d-none" id="sevenRun"
-			onclick="regularRunsCount('7')">7</button>
-	</div>
-	<div class="score-counter d-none my-1">
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('bowled')">Bowled</button>
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('lbw')">LBW</button>
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="caughtOut()">Caught</button>
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="stumpedOut()">Stumped</button>
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="runOutModal()">Run Out</button>
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('hw')">Hit
-			Wicket</button>
-	</div>
-	<div class="score-counter d-none my-1 text-end">
-		<button type="button" class="btn btn-lg rounded-pill btn-secondary m-2" onclick="undoState()"><i
+	<!-- <div class="score-counter d-none my-1 text-end">
+		<button type="button" class="btn rounded-pill btn-secondary m-2" onclick="undoState()"><i
 				class="fas fa-undo-alt"></i> Undo</button>
-	</div>
+	</div> -->
 </div>
 
 <div class="modal fade" tabindex="-1" id="no-ball">
@@ -104,7 +106,7 @@
 				<div>
 					<label class="form-label text-success h5">Runs Taken:</label>
 					<select class="form-control" id="runsTaken_nb">
-						<option value="0">No run</option>
+						<option value="0" selected>No runs, simply a no-ball</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
@@ -117,7 +119,7 @@
 				<div class="mt-3 d-none" id="nb_runs_from_div">
 					<label class="form-label text-success h5">Runs from:</label>
 					<select class="form-control" id="runsFrom_nb">
-						<option value="bat">bat</option>
+						<option value="bat" selected>bat</option>
 						<option value="bye">bye</option>
 						<option value="lb">leg-bye</option>
 					</select>
@@ -320,7 +322,7 @@
 				<div>
 					<label class="form-label text-success h5">Bye runs:</label>
 					<select class="form-control" id="wide_byes">
-						<option value="0">No byes</option>
+						<option value="0" selected>No byes, simply a wide</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
@@ -332,8 +334,8 @@
 				</div>
 				<div class="mt-3">
 					<label class="form-label text-success h5">Dismissal?</label>
-					<select class="form-control" id="wide_dismissals">
-						<option value="no-wicket">No dismissal</option>
+					<select class="form-control" id="wide_dismissal">
+						<option value="no-wicket" selected>No dismissal, simply a wide</option>
 						<option value="run-out">Run out</option>
 						<option value="stumpting">Stumping</option>
 						<option value="hit-wicket">Hit wicket</option>
@@ -342,6 +344,37 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="wideBall()">Set</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="wide-ball-run-out">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Run out(Wide ball)</h5>
+			</div>
+			<div class="modal-body">
+				<div class="mt-3">
+					<label class="form-label text-success h5">Who got out?</label>
+					<select class="form-control" id="whoGotOutOption_wr"></select>
+				</div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">On which end?</label>
+					<select class="form-control" id="onWhichEnd_wr">
+						<option value="keeperEnd">Keeper's end</option>
+						<option value="bowlerEnd">Bowler's end</option>
+					</select>
+				</div>
+				<div class="mt-3">
+					<label class="form-label text-success h5">Run-out by:</label>
+					<select class="form-control" id="runOutByOption_wr"></select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="runOutBy_wr" data-bs-dismiss="modal"
+					onclick="wideAndRunOut()">Run-out</button>
 			</div>
 		</div>
 	</div>

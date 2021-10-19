@@ -59,14 +59,14 @@ let setDomLineUp = () => {
 	for (let i = 0; i < match.noOfPlayers; i++) {
 		playerNameOption1 += `<input type="text" id="team1-${
 			i + 1
-		}" class="form-control"><br>`;
+		}" class="form-control bg-dark text-white"><br>`;
 	}
 
 	let playerNameOption2 = `<p class="mt-3 h4 text-center text-success">${match.teams[1]}</p>`;
 	for (let i = 0; i < match.noOfPlayers; i++) {
 		playerNameOption2 += `<input type="text" id="team2-${
 			i + 1
-		}" class="form-control"><br>`;
+		}" class="form-control bg-dark text-white"><br>`;
 	}
 
 	document.querySelector("#teamOnePlayers").innerHTML = playerNameOption1;
@@ -106,16 +106,33 @@ let setDomOpeners = () => {
 	// Opener batsman
 	let track = match.batting == match.teams[0] ? 0 : 1;
 	let elevenOneOption = "";
+	let pc = 0;
 	match.teamLineUp[track].forEach((e) => {
 		elevenOneOption += `<option value="${e.name}">${e.name}</option>`;
 	});
 	document.querySelector("#onStrike").innerHTML = elevenOneOption;
+
+	elevenOneOption = "";
+	match.teamLineUp[track].forEach((e) => {
+		pc++;
+		if (pc == 2) {
+			elevenOneOption += `<option value="${e.name}" selected>${e.name}</option>`;
+		} else {
+			elevenOneOption += `<option value="${e.name}">${e.name}</option>`;
+		}
+	});
 	document.querySelector("#nonStrike").innerHTML = elevenOneOption;
 
 	// Bowler on-strike
+	pc = 0;
 	elevenOneOption = "";
 	match.teamLineUp[1 - track].forEach((e) => {
-		elevenOneOption += `<option value="${e.name}">${e.name}</option>`;
+		pc++;
+		if (pc == parseInt(match.noOfPlayers)) {
+			elevenOneOption += `<option value="${e.name}" selected>${e.name}</option>`;
+		} else {
+			elevenOneOption += `<option value="${e.name}">${e.name}</option>`;
+		}
 	});
 	document.querySelector("#onStrikeBowler").innerHTML = elevenOneOption;
 };
@@ -242,4 +259,8 @@ let showHideRuns = () => {
 
 let loadAbout = () => {
 	view("about.html", () => {});
+};
+
+let loadManual = () => {
+	view("manual.html", () => {});
 };
