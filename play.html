@@ -46,8 +46,8 @@
 	</table>
 	<div class="shadow shadow-lg bg-light p-2 my-3" id="over"></div>
 	<div class="score-counter d-none my-3">
-		<button type="button" class="btn btn-lg btn-secondary m-2" data-bs-toggle="modal" data-bs-target="#wide-wicket">
-			Wide + Wicket
+		<button type="button" class="btn btn-lg btn-secondary m-2" data-bs-toggle="modal" data-bs-target="#wide-ball">
+			Wide ball
 		</button>
 		<button type="button" class="btn btn-lg btn-primary m-2" data-bs-toggle="modal" data-bs-target="#bye">
 			Bye
@@ -84,48 +84,13 @@
 		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('lbw')">LBW</button>
 		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="caughtOut()">Caught</button>
 		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="stumpedOut()">Stumped</button>
-		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="runOut()">Run Out</button>
+		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="runOutModal()">Run Out</button>
 		<button type="button" class="btn btn-lg rounded-pill btn-danger m-2" onclick="dismiss('hw')">Hit
 			Wicket</button>
 	</div>
 	<div class="score-counter d-none my-1 text-end">
 		<button type="button" class="btn btn-lg rounded-pill btn-secondary m-2" onclick="undoState()"><i
 				class="fas fa-undo-alt"></i> Undo</button>
-	</div>
-</div>
-
-<div class="modal fade" tabindex="-1" id="wide">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Wide ball</h5>
-			</div>
-			<div class="modal-body">
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="w_rb" value="0" id="w_no_run" checked>
-					<label class="form-check-label" for="w_no_run">No run</label>
-				</div>
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="radio" name="w_rb" value="1" id="w_oneW">
-					<label class="form-check-label" for="w_oneW">1b</label>
-				</div>
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="radio" name="w_rb" value="2" id="w_twoB">
-					<label class="form-check-label" for="w_twoB">2b</label>
-				</div>
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="radio" name="w_rb" value="3" id="w_threeB">
-					<label class="form-check-label" for="w_threeB">3b</label>
-				</div>
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="radio" name="w_rb" value="4" id="w_fourB">
-					<label class="form-check-label" for="w_fourB">4b</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="wideCount()">Set</button>
-			</div>
-		</div>
 	</div>
 </div>
 
@@ -179,7 +144,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" id="noBallCount" data-bs-dismiss="modal"
-					onclick="noBallCount()">Set</button>
+					onclick="noBall()">Set</button>
 			</div>
 		</div>
 	</div>
@@ -297,6 +262,14 @@
 						<option value="6">6</option>
 					</select>
 				</div>
+				<div class="mt-3 d-none" id="r_runs_from_div">
+					<label class="form-label text-success h5">Runs from:</label>
+					<select class="form-control" id="runsFrom_r">
+						<option value="bat">bat</option>
+						<option value="bye">bye</option>
+						<option value="lb">leg-bye</option>
+					</select>
+				</div>
 				<div class="mt-3">
 					<label class="form-label text-success h5">Who got out?</label>
 					<select class="form-control" id="whoGotOutOption_r"></select>
@@ -310,11 +283,12 @@
 				</div>
 				<div class="mt-3">
 					<label class="form-label text-success h5">Run-out by:</label>
-					<select class="form-control" id="runOutByOption"></select>
+					<select class="form-control" id="runOutByOption_r"></select>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" id="runOutBy" data-bs-dismiss="modal">Run-out</button>
+				<button type="button" class="btn btn-success" id="runOutBy" data-bs-dismiss="modal"
+					onclick="runOut()">Run-out</button>
 			</div>
 		</div>
 	</div>
@@ -336,25 +310,38 @@
 	</div>
 </div>
 
-<div class="modal fade" tabindex="-1" id="wide-wicket">
+<div class="modal fade" tabindex="-1" id="wide-ball">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Wide and wicket</h5>
+				<h5 class="modal-title">Wide ball</h5>
 			</div>
 			<div class="modal-body">
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="ww_rb" value="stumping" id="stumping" checked>
-					<label class="form-check-label" for="stumping">Stumping</label>
+				<div>
+					<label class="form-label text-success h5">Bye runs:</label>
+					<select class="form-control" id="wide_byes">
+						<option value="0">No byes</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+					</select>
 				</div>
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="radio" name="ww_rb" value="hit-wicket" id="hit-wicket">
-					<label class="form-check-label" for="hit-wicket">Hit wicket</label>
+				<div class="mt-3">
+					<label class="form-label text-success h5">Dismissal?</label>
+					<select class="form-control" id="wide_dismissals">
+						<option value="no-wicket">No dismissal</option>
+						<option value="run-out">Run out</option>
+						<option value="stumpting">Stumping</option>
+						<option value="hit-wicket">Hit wicket</option>
+					</select>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-bs-dismiss="modal"
-					onclick="wideAndWicket()">Dismiss</button>
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="wideBall()">Set</button>
 			</div>
 		</div>
 	</div>

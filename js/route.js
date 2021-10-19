@@ -24,7 +24,7 @@ let loadScoreModified = () => {
 	}
 };
 
-let loadMatch = () => {
+let runningMatch = () => {
 	if (localStorage.getItem("match") === null) {
 		view("details.html", () => {});
 	} else {
@@ -42,5 +42,5 @@ let loadMatch = () => {
 };
 
 window.addEventListener("load", () => {
-	loadMatch();
+	runningMatch();
 });

@@ -1,4 +1,12 @@
 let noBallModal = () => {
+	// init
+	document.querySelector("#runsTaken_nb").value = 0;
+	document.querySelector("#nb_runs_from_div").classList.add("d-none");
+	document.querySelector("#isRunOut").checked = false;
+	document.querySelector("#nb_who_got_out_div").classList.add("d-none");
+	document.querySelector("#nb_on_which_end_div").classList.add("d-none");
+	document.querySelector("#nb_run_out_by").classList.add("d-none");
+
 	let match = JSON.parse(localStorage.getItem("match"));
 	let track = match.batting == match.teams[0] ? 0 : 1;
 	new bootstrap.Modal(document.querySelector("#no-ball")).show();
@@ -36,7 +44,7 @@ let noBallModal = () => {
 	});
 };
 
-let noBallCount = () => {
+let noBall = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 	let track = match.batting == match.teams[0] ? 0 : 1;
 
@@ -62,33 +70,50 @@ let noBallCount = () => {
 
 	localStorage.setItem("match", JSON.stringify(match));
 	loadScore();
-	overCompletionCheck();
 
 	if (runTaken > 0) {
+		console.log("taken", runTaken);
 		// batting team scoreboard
 		match.teamScoreboard[track].totalRunScored += runTaken;
-		// match.teamScoreboard[track].curOver.push(runTaken + "b");
 
 		if (runFrom == "bat") {
 			// batsman profile
 			match.teamLineUp[track][batsmanId].runScored += runTaken;
 		} else {
+			// add to extra
 			match.teamScoreboard[track].runsFromExtras++;
 		}
+
 		// bowler profile
 		match.teamLineUp[1 - track][bowlerId].runGiven += runTaken;
+
+		if (runTaken % 2 == 1) {
+			[match.onStrikeBatsman, match.nonStrikeBatsman] = [
+				match.nonStrikeBatsman,
+				match.onStrikeBatsman,
+			];
+		}
+
 		localStorage.setItem("match", JSON.stringify(match));
 		loadScore();
-		overCompletionCheck();
+	} else {
+		console.log("not-taken", runTaken);
 	}
 
 	if (document.querySelector("#isRunOut").checked) {
+		if (runTaken % 2 == 1) {
+			[match.onStrikeBatsman, match.nonStrikeBatsman] = [
+				match.nonStrikeBatsman,
+				match.onStrikeBatsman,
+			];
+		}
+
 		match.lastBatsman = document.querySelector("#whoGotOutOption_nb").value;
 		console.log(match.lastBatsman);
 		batsmanId = match.teamLineUp[track].findIndex(
 			(playerObj) => playerObj.name == match.lastBatsman
 		);
-		console.log(batsmanId);
+
 		// batting team scoreboard
 		match.teamScoreboard[track].wicketFall++;
 		// batsman profile
@@ -98,7 +123,6 @@ let noBallCount = () => {
 			// all out
 			localStorage.setItem("match", JSON.stringify(match));
 			loadScore();
-			overCompletionCheck();
 		} else {
 			new bootstrap.Modal(document.querySelector("#new-batsman")).show();
 			document.querySelector("#batting-modal-message").innerHTML =
@@ -117,15 +141,33 @@ let noBallCount = () => {
 			document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 			document.querySelector("#setnewBatsman").addEventListener("click", () => {
-				if (document.querySelector("#onWhichEnd_r").value == "keeperEnd") {
-					match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+				if (match.lastBatsman == match.onStrikeBatsman) {
+					if (document.querySelector("#onWhichEnd_nb").value == "bowlerEnd") {
+						[match.onStrikeBatsman, match.nonStrikeBatsman] = [
+							match.nonStrikeBatsman,
+							match.onStrikeBatsman,
+						];
+						match.nonStrikeBatsman =
+							document.querySelector("#newBatsman").value;
+					} else {
+						match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+					}
 				} else {
-					match.nonStrikeBatsman = document.querySelector("#newBatsman").value;
+					if (document.querySelector("#onWhichEnd_nb").value == "keeperEnd") {
+						[match.onStrikeBatsman, match.nonStrikeBatsman] = [
+							match.nonStrikeBatsman,
+							match.onStrikeBatsman,
+						];
+						match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+					} else {
+						match.nonStrikeBatsman =
+							document.querySelector("#newBatsman").value;
+					}
 				}
 
+				console.log("sut");
 				localStorage.setItem("match", JSON.stringify(match));
 				loadScore();
-				overCompletionCheck();
 			});
 		}
 	}
