@@ -105,15 +105,26 @@ let runOut = () => {
 		document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 		document.querySelector("#setnewBatsman").addEventListener("click", () => {
+			let newPickedBatsman = document.querySelector("#newBatsman").value;
 			if (match.lastBatsman == match.onStrikeBatsman) {
 				if (document.querySelector("#onWhichEnd_r").value == "bowlerEnd") {
 					[match.onStrikeBatsman, match.nonStrikeBatsman] = [
 						match.nonStrikeBatsman,
 						match.onStrikeBatsman,
 					];
-					match.nonStrikeBatsman = document.querySelector("#newBatsman").value;
+					match.nonStrikeBatsman = newPickedBatsman;
+					let batsmanId = match.teamLineUp[track].findIndex(
+						(playerObj) => playerObj.name == match.onStrikeBatsman
+					);
+					match.teamLineUp[track][batsmanId].hasBatted = true;
+					match.teamLineUp[track][batsmanId].status = "not out";
 				} else {
-					match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+					match.onStrikeBatsman = newPickedBatsman;
+					let batsmanId = match.teamLineUp[track].findIndex(
+						(playerObj) => playerObj.name == match.onStrikeBatsman
+					);
+					match.teamLineUp[track][batsmanId].hasBatted = true;
+					match.teamLineUp[track][batsmanId].status = "not out";
 				}
 			} else {
 				if (document.querySelector("#onWhichEnd_r").value == "keeperEnd") {
@@ -121,9 +132,19 @@ let runOut = () => {
 						match.nonStrikeBatsman,
 						match.onStrikeBatsman,
 					];
-					match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+					match.onStrikeBatsman = newPickedBatsman;
+					let batsmanId = match.teamLineUp[track].findIndex(
+						(playerObj) => playerObj.name == match.onStrikeBatsman
+					);
+					match.teamLineUp[track][batsmanId].hasBatted = true;
+					match.teamLineUp[track][batsmanId].status = "not out";
 				} else {
-					match.nonStrikeBatsman = document.querySelector("#newBatsman").value;
+					match.nonStrikeBatsman = newPickedBatsman;
+					let batsmanId = match.teamLineUp[track].findIndex(
+						(playerObj) => playerObj.name == match.onStrikeBatsman
+					);
+					match.teamLineUp[track][batsmanId].hasBatted = true;
+					match.teamLineUp[track][batsmanId].status = "not out";
 				}
 			}
 

@@ -60,11 +60,10 @@ let noBall = () => {
 	// batting team scoreboard
 	match.teamScoreboard[track].totalRunScored++;
 	match.teamScoreboard[track].runsFromExtras++;
+	match.teamScoreboard[track].curOver.push(1 + "nb");
 	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
 	match.teamLineUp[track][batsmanId].ballFaced++;
 	// bowler profile
-	match.teamLineUp[1 - track][bowlerId].hasBowled = true;
 	match.teamLineUp[1 - track][bowlerId].runGiven++;
 	match.teamLineUp[1 - track][bowlerId].noBallGiven++;
 
@@ -72,10 +71,10 @@ let noBall = () => {
 	loadScore();
 
 	if (runTaken > 0) {
-		console.log("taken", runTaken);
 		// batting team scoreboard
 		match.teamScoreboard[track].totalRunScored += runTaken;
-
+		match.teamScoreboard[track].curOver.pop();
+		match.teamScoreboard[track].curOver.push(runTaken + "nb");
 		if (runFrom == "bat") {
 			// batsman profile
 			match.teamLineUp[track][batsmanId].runScored += runTaken;
@@ -96,8 +95,6 @@ let noBall = () => {
 
 		localStorage.setItem("match", JSON.stringify(match));
 		loadScore();
-	} else {
-		console.log("not-taken", runTaken);
 	}
 
 	if (document.querySelector("#isRunOut").checked) {
@@ -109,13 +106,14 @@ let noBall = () => {
 		}
 
 		match.lastBatsman = document.querySelector("#whoGotOutOption_nb").value;
-		console.log(match.lastBatsman);
 		batsmanId = match.teamLineUp[track].findIndex(
 			(playerObj) => playerObj.name == match.lastBatsman
 		);
 
 		// batting team scoreboard
 		match.teamScoreboard[track].wicketFall++;
+		match.teamScoreboard[track].curOver.pop();
+		match.teamScoreboard[track].curOver.push(1 + runTaken + "nb W");
 		// batsman profile
 		match.teamLineUp[track][batsmanId].gotOut = true;
 
@@ -141,16 +139,26 @@ let noBall = () => {
 			document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 			document.querySelector("#setnewBatsman").addEventListener("click", () => {
+				let newPickedBatsman = document.querySelector("#newBatsman").value;
 				if (match.lastBatsman == match.onStrikeBatsman) {
 					if (document.querySelector("#onWhichEnd_nb").value == "bowlerEnd") {
 						[match.onStrikeBatsman, match.nonStrikeBatsman] = [
 							match.nonStrikeBatsman,
 							match.onStrikeBatsman,
 						];
-						match.nonStrikeBatsman =
-							document.querySelector("#newBatsman").value;
+						match.nonStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					} else {
-						match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+						match.onStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					}
 				} else {
 					if (document.querySelector("#onWhichEnd_nb").value == "keeperEnd") {
@@ -158,14 +166,22 @@ let noBall = () => {
 							match.nonStrikeBatsman,
 							match.onStrikeBatsman,
 						];
-						match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+						match.onStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					} else {
-						match.nonStrikeBatsman =
-							document.querySelector("#newBatsman").value;
+						match.nonStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					}
 				}
 
-				console.log("sut");
 				localStorage.setItem("match", JSON.stringify(match));
 				loadScore();
 			});

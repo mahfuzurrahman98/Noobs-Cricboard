@@ -1,8 +1,17 @@
-<div id="match-heading" class="my-4 text-primary h5 mx-lg-5 px-2"></div>
-
+<div id="match-heading" class="mt-4 text-primary h5 mx-lg-5 px-2"></div>
+<div class="mx-lg-5 px-2 mb-3">
+	<span>
+		<img src="images/coin.png" width="20" height="20" alt="">
+	</span>
+	<span id="toss-win" class="mt-3"></span>
+	<span id="innings-indicator"></span>
+</div>
 <div class="shadow shadow-lg mx-lg-5 px-2">
 	<div class="row py-2">
-		<div class="col-7 fw-bold">
+		<div class="col-12 fw-bold text-secondary mb-2" id="teamBatted">
+			<span id="teamBattedNameScoreWicket" class="h4"></span>
+		</div>
+		<div class="col-7 fw-bold text-success">
 			<span id="teamName" class="h4"></span>
 			<span id="scoreAndWicket" class="h4"></span>
 		</div>
@@ -18,7 +27,7 @@
 		<button type="button" class="btn  rounded-circle btn-primary m-2" onclick="regularRunsCount('2')">2</button>
 		<button type="button" class="btn  rounded-circle btn-primary m-2" onclick="regularRunsCount('3')">3</button>
 		<button type="button" class="btn  rounded-circle btn-success m-2" onclick="regularRunsCount('4')">4</button>
-		<button type="button" class="btn  rounded-circle btn-success m-2" onclick="regularRunsCount('6')">6</button>
+		<button type="button" class="btn  rounded-circle btn-purple m-2" onclick="regularRunsCount('6')">6</button>
 		<a href="javascript:void(0)" class="m-2 text-secondary fw-bold text-decoration-none" onclick="showHideRuns()"><i
 				class="fas fa-angle-double-right fa-2x"></i></a>
 		<button type="button" class="btn  rounded-circle btn-dark m-2 d-none" id="fiveRun"
@@ -75,15 +84,15 @@
 			<tr class="fw-bold">
 				<th>Bowl.</th>
 				<th>O</th>
-				<th>R</th>
 				<th>M</th>
+				<th>R</th>
 				<th>W</th>
 				<th>Eco</th>
-				<th>0s</th>
+				<!-- <th>0s</th>
 				<th>4s</th>
 				<th>6s</th>
 				<th>Wd</th>
-				<th>Nb</th>
+				<th>Nb</th> -->
 			</tr>
 		</thead>
 		<tbody>

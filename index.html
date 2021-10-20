@@ -7,9 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noobs Cricboard</title>
     <link rel="icon" href="images/logo.png">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
 </head>
 
 <body>
@@ -45,6 +43,18 @@
                         <span> Running match</span>
                     </a>
                 </li>
+                <li class="d-none nav-item mx-auto mx-lg-1 my-1 my-lg-0 shadow shadow-lg px-3 pt-lg-1 rounded-pill"
+                    id="teamOneCard">
+                    <a id="teamOneName" class="nav-link active rounded-pill text-success" aria-current="page"
+                        href="javascript:void(0)" onclick="teamFullCard(0)">
+                    </a>
+                </li>
+                <li class="d-none nav-item mx-auto mx-lg-1 my-1 my-lg-0 shadow shadow-lg px-3 pt-lg-1 rounded-pill"
+                    id="teamTwoCard">
+                    <a id="teamTwoName" class="nav-link active rounded-pill text-success" aria-current="page"
+                        href="javascript:void(0)" onclick="teamFullCard(1)">
+                    </a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item mx-1">
@@ -56,7 +66,7 @@
                 <li class="nav-item mx-1">
                     <a class="nav-link active"
                         href="mailto:mdmahfuzurrahmanarif@gmail.com?Subject=Noobs-Cricboard%20bug%20report"
-                        target="_blank" onclick="loadContact()">Contact</a>
+                        target="_blank">Contact</a>
                 </li>
             </ul>
         </div>

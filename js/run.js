@@ -18,12 +18,10 @@ let regularRunsCount = (x) => {
 	match.teamScoreboard[track].curOver.push(x);
 
 	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
 	match.teamLineUp[track][batsmanId].runScored += runTaken;
 	match.teamLineUp[track][batsmanId].ballFaced++;
 
 	// bowler profile
-	match.teamLineUp[track][bowlerId].hasBowled = true;
 	match.teamLineUp[1 - track][bowlerId].ballBowled++;
 	match.teamLineUp[1 - track][bowlerId].runGiven += runTaken;
 
@@ -78,11 +76,9 @@ let legByeCount = () => {
 	match.teamScoreboard[track].curOver.push(runTaken + "lb");
 
 	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
 	match.teamLineUp[track][batsmanId].ballFaced++;
 
 	// bowler profile
-	match.teamLineUp[track][bowlerId].hasBowled = true;
 	match.teamLineUp[1 - track][bowlerId].ballBowled++;
 	match.teamLineUp[1 - track][bowlerId].runGiven += runTaken;
 
@@ -128,11 +124,9 @@ let byeCount = () => {
 	match.teamScoreboard[track].curOver.push(runTaken + "b");
 
 	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
 	match.teamLineUp[track][batsmanId].ballFaced++;
 
 	// bowler profile
-	match.teamLineUp[track][bowlerId].hasBowled = true;
 	match.teamLineUp[1 - track][bowlerId].ballBowled++;
 	match.teamLineUp[1 - track][bowlerId].runGiven += runTaken;
 

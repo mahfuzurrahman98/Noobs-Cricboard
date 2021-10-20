@@ -20,7 +20,6 @@ let dismiss = (x) => {
 	match.teamLineUp[track][batsmanId].gotOut = true;
 
 	// bowler profile
-	match.teamLineUp[1 - track][bowlerId].hasBowled = true;
 	match.teamLineUp[1 - track][bowlerId].ballBowled++;
 	match.teamLineUp[1 - track][bowlerId].dotGiven++;
 	match.teamLineUp[1 - track][bowlerId].wicketTaken++;
@@ -29,15 +28,19 @@ let dismiss = (x) => {
 
 	if (x == "bowled") {
 		match.lastWicketFallMessage = `Last batsman: <b>${match.onStrikeBatsman}</b> b <b>${match.onStrikeBowler}</b>`;
+		match.teamLineUp[track][batsmanId].status = `b ${match.onStrikeBowler}`;
 	} else if (x == "lbw") {
 		match.lastWicketFallMessage = `Last batsman: <b>${match.onStrikeBatsman}</b> lbw <b>${match.onStrikeBowler}</b>`;
+		match.teamLineUp[track][batsmanId].status = `lbw ${match.onStrikeBowler}`;
 	} else {
 		match.lastWicketFallMessage = `Last batsman: <b>${match.onStrikeBatsman}</b> hit-wicket b <b>${match.onStrikeBowler}</b>`;
+		match.teamLineUp[track][
+			batsmanId
+		].status = `hit-wicket b ${match.onStrikeBowler}`;
 	}
 
 	localStorage.setItem("match", JSON.stringify(match));
 	newBatsman();
-	overCompletionCheck();
 };
 
 let stumpedOut = () => {
@@ -66,19 +69,19 @@ let stumpedOut = () => {
 		}</b> st <b>${document.querySelector("#stumpedByOption").value}</b> b <b>${
 			match.onStrikeBowler
 		}</b>`;
-
+		match.teamLineUp[track][batsmanId].status = `st ${
+			document.querySelector("#stumpedByOption").value
+		} b ${match.onStrikeBowler}`;
 		// batting team scoreboard
 		match.teamScoreboard[track].ballsPlayed++;
 		match.teamScoreboard[track].wicketFall++;
 		match.teamScoreboard[track].curOver.push("W");
 
 		// batsman profile
-		match.teamLineUp[track][batsmanId].hasBowled = true;
 		match.teamLineUp[track][batsmanId].ballFaced++;
 		match.teamLineUp[track][batsmanId].gotOut = true;
 
 		// bowler profile
-		match.teamLineUp[1 - track][bowlerId].hasBowled = true;
 		match.teamLineUp[1 - track][bowlerId].ballBowled++;
 		match.teamLineUp[1 - track][bowlerId].dotGiven++;
 		match.teamLineUp[1 - track][bowlerId].wicketTaken++;
@@ -87,7 +90,6 @@ let stumpedOut = () => {
 
 		localStorage.setItem("match", JSON.stringify(match));
 		newBatsman();
-		overCompletionCheck();
 	});
 };
 
@@ -122,13 +124,19 @@ let caughtOut = () => {
 		if (
 			document.querySelector("#caughtByOption").value == match.onStrikeBowler
 		) {
-			match.lastWicketFallMessage = `Last batsman: <b>${match.lastBatsman}</b> c & b <b>${match.onStrikeBowler}</b>`;
+			match.lastWicketFallMessage = `Last batsman: <b>${match.lastBatsman}</b> c&b <b>${match.onStrikeBowler}</b>`;
+			match.teamLineUp[track][
+				batsmanId
+			].status = `c & b ${match.onStrikeBowler}`;
 		} else {
 			match.lastWicketFallMessage = `Last batsman: <b>${
 				match.lastBatsman
 			}</b> c <b>${document.querySelector("#caughtByOption").value}</b> b <b>${
 				match.onStrikeBowler
 			}</b>`;
+			match.teamLineUp[track][batsmanId].status = `c ${
+				document.querySelector("#caughtByOption").value
+			} b ${match.onStrikeBowler}`;
 		}
 
 		// batting team scoreboard
@@ -142,7 +150,6 @@ let caughtOut = () => {
 		match.teamLineUp[track][batsmanId].gotOut = true;
 
 		// bowler profile
-		match.teamLineUp[1 - track][bowlerId].hasBowled = true;
 		match.teamLineUp[1 - track][bowlerId].ballBowled++;
 		match.teamLineUp[1 - track][bowlerId].dotGiven++;
 		match.teamLineUp[1 - track][bowlerId].wicketTaken++;
@@ -151,7 +158,6 @@ let caughtOut = () => {
 			// all out
 			localStorage.setItem("match", JSON.stringify(match));
 			loadScore();
-			overCompletionCheck();
 		} else {
 			new bootstrap.Modal(document.querySelector("#new-batsman")).show();
 			document.querySelector("#batting-modal-message").innerHTML =

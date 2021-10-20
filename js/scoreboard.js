@@ -146,18 +146,6 @@ let getVerdict = () => {
 let loadScore = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 	let track = match.batting == match.teams[0] ? 0 : 1;
-	let options = {
-		weekday: "long",
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	};
-	let date_time = new Date(match.startTime);
-	date_time = date_time.toLocaleDateString("en-US", options);
-
-	document.querySelector(
-		"#match-heading"
-	).innerHTML = `${match.title} <span class="text-dark fw-bold">|</span> ${date_time} <span class="text-dark fw-bold">|</span> ${match.teams[0]} vs ${match.teams[1]} <span class="text-dark fw-bold">|</span> ${match.venue}`;
 
 	let batsmanId1 = match.teamLineUp[track].findIndex(
 		(playerObj) => playerObj.name == match.onStrikeBatsman
@@ -181,12 +169,12 @@ let loadScore = () => {
 	}
 
 	let displaybatsman1 = `<td>${batsman1.name}*</td>
-    <td>${batsman1.runScored}</td>
-    <td>${batsman1.ballFaced}</td>
-    <td>${batsman1.ballDotted}</td>
-    <td>${batsman1.fourHitted}</td>
-    <td>${batsman1.sixHitted}</td>
-    <td>${batsmanOneStrikeRate}</td>`;
+		<td>${batsman1.runScored}</td>
+		<td>${batsman1.ballFaced}</td>
+		<td>${batsman1.ballDotted}</td>
+		<td>${batsman1.fourHitted}</td>
+		<td>${batsman1.sixHitted}</td>
+		<td>${batsmanOneStrikeRate}</td>`;
 
 	let batsman2 = match.teamLineUp[track][batsmanId2];
 	match.teamLineUp[track][batsmanId2].hasBatted = true;
@@ -199,12 +187,12 @@ let loadScore = () => {
 	}
 
 	let displaybatsman2 = `<td>${batsman2.name}</td>
-    <td>${batsman2.runScored}</td>
-    <td>${batsman2.ballFaced}</td>
-    <td>${batsman2.ballDotted}</td>
-    <td>${batsman2.fourHitted}</td>
-    <td>${batsman2.sixHitted}</td>
-    <td>${batsmanTwoStrikeRate}</td>`;
+		<td>${batsman2.runScored}</td>
+		<td>${batsman2.ballFaced}</td>
+		<td>${batsman2.ballDotted}</td>
+		<td>${batsman2.fourHitted}</td>
+		<td>${batsman2.sixHitted}</td>
+		<td>${batsmanTwoStrikeRate}</td>`;
 
 	let bowler = match.teamLineUp[1 - track][bowlerId];
 	match.teamLineUp[1 - track][bowlerId].hasBowled = true;
@@ -214,16 +202,26 @@ let loadScore = () => {
 		bowler_economy = "0.00";
 	}
 	let displayBowler = `<td>${bowler.name}</td>
-			<td>${parseInt(bowler.ballBowled / 6)}.${bowler.ballBowled % 6}</td>
-			<td>${bowler.runGiven}</td>
-			<td>${bowler.maidenGiven}</td>
-			<td>${bowler.wicketTaken}</td>
-			<td>${bowler_economy}</td>
-			<td>${bowler.dotGiven}</td>
-			<td>${bowler.fourConsidered}</td>
-			<td>${bowler.sixConsidered}</td>
-			<td>${bowler.wideGiven}</td>
-			<td>${bowler.noBallGiven}</td>`;
+		<td>${parseInt(bowler.ballBowled / 6)}.${bowler.ballBowled % 6}</td>
+		<td>${bowler.maidenGiven}</td>
+		<td>${bowler.runGiven}</td>
+		<td>${bowler.wicketTaken}</td>
+		<td>${bowler_economy}</td>`;
+
+	if (match.runningInnings == 1) {
+		if (document.querySelector("#teamBatted").classList.contains("d-none")) {
+			document.querySelector("#teamBatted").classList.remove("d-none");
+		}
+		document.querySelector("#teamBattedNameScoreWicket").innerHTML = `${
+			match.fielding
+		} - ${match.teamScoreboard[1 - track].totalRunScored} / ${
+			match.teamScoreboard[1 - track].wicketFall
+		} (${parseInt(match.teamScoreboard[1 - track].ballsPlayed / 6)}.${
+			match.teamScoreboard[1 - track].ballsPlayed % 6
+		})`;
+	} else {
+		document.querySelector("#teamBatted").classList.add("d-none");
+	}
 
 	document.querySelector("#teamName").innerHTML = `${match.batting} - `;
 	document.querySelector(
@@ -240,17 +238,157 @@ let loadScore = () => {
 	document.querySelector("#over").innerHTML = "";
 	for (let j of match.teamScoreboard[track].curOver) {
 		let newBowl = document.createElement("span");
-		let bowl_btn_cls = "btn-outline-secondary";
-		if (j.includes("W")) {
-			bowl_btn_cls = "btn-outline-danger";
+		let bowl_btn_cls = "btn-outline-primary";
+		if (j.includes("b")) {
+			bowl_btn_cls = "btn-outline-dark";
 		}
-		newBowl.classList.add("btn", bowl_btn_cls, "rounded-circle", "mx-1");
+		if (j.includes("wd")) {
+			bowl_btn_cls = "btn-outline-secondary";
+		}
+		if (j.includes("nb")) {
+			bowl_btn_cls = "btn-outline-warning";
+		}
+		if (j.includes("4")) {
+			bowl_btn_cls = "btn-outline-success";
+		}
+		if (j.includes("6")) {
+			bowl_btn_cls = "btn-outline-purple";
+		}
+		newBowl.classList.add("btn", bowl_btn_cls, "rounded-pill", "mx-1");
 		newBowl.innerText = j;
 		document.querySelector("#over").appendChild(newBowl);
 	}
 
 	getVerdict();
 	match = JSON.parse(localStorage.getItem("match"));
+};
+
+let teamFullCardFun = (track) => {
+	let match = JSON.parse(localStorage.getItem("match"));
+
+	let displayBatsman = "";
+	let displayBowler = "";
+	let yet_to_bat = "";
+
+	let batsmanArray = match.teamLineUp[track];
+	batsmanArray.sort((x, y) => {
+		if (x.batPosition < y.batPosition) {
+			return -1;
+		} else if (x.batPosition > y.batPosition) {
+			return 1;
+		} else {
+			return 0;
+		}
+	});
+
+	for (let batsman of batsmanArray) {
+		let batsmanStrikeRate = (
+			(batsman.runScored * 100) /
+			batsman.ballFaced
+		).toFixed(2);
+		if (batsman.ballFaced == 0) {
+			batsmanStrikeRate = 0.0;
+		}
+
+		displayBatsman += `<tr><td>${batsman.name}</td>
+			<td>${batsman.status}</td>
+			<td>${batsman.runScored}</td>
+			<td>${batsman.ballFaced}</td>
+			<td>${batsman.ballDotted}</td>
+			<td>${batsman.fourHitted}</td>
+			<td>${batsman.sixHitted}</td>
+			<td>${batsmanStrikeRate}</td></tr>`;
+	}
+
+	let bowlerArray = match.teamLineUp[1 - track];
+	bowlerArray.sort((x, y) => {
+		if (x.bowlPosition < y.bowlPosition) {
+			return -1;
+		} else if (x.bowlPosition > y.bowlPosition) {
+			return 1;
+		} else {
+			return 0;
+		}
+	});
+
+	for (let bowler of bowlerArray) {
+		if (!bowler.hasBowled) {
+			continue;
+		}
+		let bowler_economy = ((bowler.runGiven * 6) / bowler.ballBowled).toFixed(2);
+		if (bowler.ballBowled == 0) {
+			bowler_economy = "0.00";
+		}
+
+		displayBowler += `<tr><td>${bowler.name}</td>
+			<td>${parseInt(bowler.ballBowled / 6)}.${bowler.ballBowled % 6}</td>
+			<td>${bowler.runGiven}</td>
+			<td>${bowler.maidenGiven}</td>
+			<td>${bowler.wicketTaken}</td>
+			<td>${bowler_economy}</td>
+			<td>${bowler.dotGiven}</td>
+			<td>${bowler.fourConsidered}</td>
+			<td>${bowler.sixConsidered}</td>
+			<td>${bowler.wideGiven}</td>
+			<td>${bowler.noBallGiven}</td></tr>`;
+	}
+
+	document.querySelector("#battingCard").innerHTML = displayBatsman;
+	if (match.teams[track] != match.batting && match.runningInnings == 0) {
+		// first innings is running & this team is fielding
+		document.querySelector("#extraRuns").classList.add("d-none");
+		document.querySelector("#scoreRateOver").classList.add("d-none");
+		document.querySelector("#bowlingTable").classList.add("d-none");
+	} else {
+		if (document.querySelector("#extraRuns").classList.contains("d-none")) {
+			document.querySelector("#extraRuns").classList.remove("d-none");
+			document.querySelector("#scoreRateOver").classList.remove("d-none");
+			document.querySelector("#bowlingTable").classList.remove("d-none");
+		}
+	}
+	document.querySelector(
+		"#extraRuns"
+	).innerHTML = `Extras: ${match.teamScoreboard[track].runsFromExtras}`;
+
+	let crr = (
+		(match.teamScoreboard[track].totalRunScored /
+			match.teamScoreboard[track].ballsPlayed) *
+		6
+	).toFixed(2);
+	if (match.teamScoreboard[track].ballsPlayed == 0) {
+		crr = "0.00";
+	}
+	let socreRateOverShow = `<b>Score:</b> <span class="text-primary">${match.teamScoreboard[track].totalRunScored} / ${match.teamScoreboard[track].wicketFall}</span> <span class="text-success">|</span> `;
+
+	if (match.teams[track] != match.fielding && match.runningInnings == 1) {
+		// second innings is running & this team is fielding
+		socreRateOverShow += `Target: ${
+			match.teamScoreboard[1 - track].totalRunScored -
+			match.teamScoreboard[track].totalRunScored +
+			1
+		} <span class="text-success">|</span> `;
+	}
+
+	socreRateOverShow += `Over: ${parseInt(
+		match.teamScoreboard[track].ballsPlayed / 6
+	)}.${match.teamScoreboard[track].ballsPlayed % 6}(${
+		match.noOfOvers
+	}) <span class="text-success">|</span> Run rate: ${crr}`;
+
+	if (match.teams[track] != match.fielding && match.runningInnings == 1) {
+		// second innings is running & this team is fielding
+		let runsNeeded =
+			match.teamScoreboard[1 - track].totalRunScored -
+			match.teamScoreboard[track].totalRunScored +
+			1;
+		let remBowls =
+			match.noOfOvers * 6 - match.teamScoreboard[track].ballsPlayed;
+		let rr = ((runsNeeded / remBowls) * 6).toFixed(2);
+		socreRateOverShow += `, Req. rate: ${rr}`;
+	}
+	document.querySelector("#scoreRateOver").innerHTML = socreRateOverShow;
+
+	document.querySelector("#bowlingCard").innerHTML = displayBowler;
 };
 
 let newBatsman = () => {
@@ -279,10 +417,21 @@ let newBatsman = () => {
 		document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 		document.querySelector("#setnewBatsman").addEventListener("click", () => {
-			match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+			let newPickedBatsman = document.querySelector("#newBatsman").value;
+			match.onStrikeBatsman = newPickedBatsman;
+			match.teamScoreboard[track].noOfBatsmanBatted++;
+
+			let batsmanId = match.teamLineUp[track].findIndex(
+				(playerObj) => playerObj.name == match.onStrikeBatsman
+			);
+			match.teamLineUp[track][batsmanId].hasBatted = true;
+			match.teamLineUp[track][batsmanId].batPosition =
+				match.teamScoreboard[track].noOfBatsmanBatted;
+			match.teamLineUp[track][batsmanId].status = "not out";
 
 			localStorage.setItem("match", JSON.stringify(match));
 			loadScore();
+			overCompletionCheck();
 		});
 	}
 };
@@ -303,7 +452,17 @@ let newBowler = () => {
 
 	document.querySelector("#newBowler").innerHTML = elevenOneOption;
 	document.querySelector("#setNewBowler").addEventListener("click", () => {
-		match.onStrikeBowler = document.querySelector("#newBowler").value;
+		let newPickedBowler = document.querySelector("#newBowler").value;
+		match.onStrikeBowler = newPickedBowler;
+		let bowlerId = match.teamLineUp[track].findIndex(
+			(playerObj) => playerObj.name == newPickedBowler
+		);
+		match.teamLineUp[track][bowlerId].hasBowled = true;
+		if (match.teamLineUp[track][bowlerId].bowlPosition == 12) {
+			match.teamScoreboard[track].noOfBowlerBowled++;
+			match.teamLineUp[track][bowlerId].bowlPosition =
+				match.teamScoreboard[track].noOfBowlerBowled;
+		}
 		localStorage.setItem("match", JSON.stringify(match));
 		loadScore();
 	});
@@ -323,14 +482,9 @@ let checkMaiden = () => {
 				i.includes("4")
 			) {
 				return false;
-			} else if (
-				i.includes("5") ||
-				i.includes("6") ||
-				i.includes("7") ||
-				i.includes("8")
-			) {
+			} else if (i.includes("5") || i.includes("6") || i.includes("7")) {
 				return false;
-			} else if (i.includes("Wd") || i.includes("Nb")) {
+			} else if (i.includes("wd") || i.includes("nb")) {
 				return false;
 			}
 		}
@@ -363,7 +517,6 @@ let overCompletionCheck = () => {
 		localStorage.setItem("match", JSON.stringify(match));
 		// get a new bowler
 		if (match.verdictFlag % 2 == 1) {
-			console.log("overcc");
 			newBowler();
 		}
 	}

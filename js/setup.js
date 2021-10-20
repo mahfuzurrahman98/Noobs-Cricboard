@@ -1,5 +1,4 @@
 let matchDetailsSetup = () => {
-	console.log("init");
 	// initialization
 	localStorage.clear();
 
@@ -76,22 +75,23 @@ let setDomLineUp = () => {
 let tossOverAndPlay = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 
-	let tossWonBy = document.querySelector("#teamNames").value;
-	let tossDecision = document.querySelector("#tossDecision").value;
-	match.tossWonBy = tossWonBy;
+	match.tossWonBy = document.querySelector("#teamNames").value;
+	match.tossDecision = document.querySelector("#tossDecision").value;
 
-	if (tossWonBy == match.teams[0]) {
-		tossLostBy = match.teams[1];
+	if (match.tossWonBy == match.teams[0]) {
+		match.tossLostBy = match.teams[1];
 	} else {
-		tossLostBy = match.teams[0];
+		match.tossLostBy = match.teams[0];
 	}
 
-	if (tossDecision == "bat") {
-		match.batting = tossWonBy;
-		match.fielding = tossLostBy;
+	if (match.tossDecision == "bat") {
+		match.batting = match.tossWonBy;
+		match.fielding = match.tossLostBy;
+		match.firstBat = match.tossWonBy;
 	} else {
-		match.batting = tossLostBy;
-		match.fielding = tossWonBy;
+		match.batting = match.tossLostBy;
+		match.fielding = match.tossWonBy;
+		match.secondBat = match.tossLostBy;
 	}
 	match.noOfOvers = document.querySelector("#overs").value;
 	match.noOfPlayers = document.querySelector("#players").value;
@@ -158,6 +158,8 @@ let lineUpSetup = () => {
 		match.teamLineUp[0].push({
 			name: document.querySelector(`#team1-${i + 1}`).value,
 			hasBatted: false,
+			batPosition: 12,
+			status: "yet to bat",
 			gotOut: false,
 			gotRetiredHurt: false,
 			runScored: 0,
@@ -166,6 +168,7 @@ let lineUpSetup = () => {
 			fourHitted: 0,
 			sixHitted: 0,
 			hasBowled: false,
+			bowlPosition: 12,
 			ballBowled: 0,
 			runGiven: 0,
 			dotGiven: 0,
@@ -180,6 +183,8 @@ let lineUpSetup = () => {
 		match.teamLineUp[1].push({
 			name: document.querySelector(`#team2-${i + 1}`).value,
 			hasBatted: false,
+			batPosition: 12,
+			status: "yet to bat",
 			gotOut: false,
 			gotRetiredHurt: false,
 			runScored: 0,
@@ -188,6 +193,7 @@ let lineUpSetup = () => {
 			fourHitted: 0,
 			sixHitted: 0,
 			hasBowled: false,
+			bowlPosition: 12,
 			ballBowled: 0,
 			runGiven: 0,
 			dotGiven: 0,
@@ -217,6 +223,7 @@ let lineUpSetup = () => {
 
 let setOpeners = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
+	let track = match.batting == match.teams[0] ? 0 : 1;
 
 	let onStrikeBatsman = document.querySelector("#onStrike").value;
 	let nonStrikeBatsman = document.querySelector("#nonStrike").value;
@@ -228,12 +235,39 @@ let setOpeners = () => {
 			"Choose different batsmen for both ends";
 		return;
 	}
+
 	match.onStrikeBatsman = onStrikeBatsman;
 	match.nonStrikeBatsman = nonStrikeBatsman;
 	match.onStrikeBowler = onStrikeBowler;
 
+	let batsmanId1 = match.teamLineUp[track].findIndex(
+		(playerObj) => playerObj.name == match.onStrikeBatsman
+	);
+	let batsmanId2 = match.teamLineUp[track].findIndex(
+		(playerObj) => playerObj.name == match.nonStrikeBatsman
+	);
+	let bowlerId = match.teamLineUp[1 - track].findIndex(
+		(playerObj) => playerObj.name == match.onStrikeBowler
+	);
+
+	match.teamLineUp[track][batsmanId1].hasBatted = true;
+	match.teamLineUp[track][batsmanId1].batPosition = 1;
+	match.teamLineUp[track][batsmanId1].status = "not out";
+
+	match.teamLineUp[track][batsmanId2].hasBatted = true;
+	match.teamLineUp[track][batsmanId2].batPosition = 2;
+	match.teamLineUp[track][batsmanId2].status = "not out";
+	match.teamScoreboard[track].noOfBatsmanBatted = 2;
+
+	match.teamLineUp[1 - track][bowlerId].hasBowled = true;
+	match.teamLineUp[1 - track][bowlerId].bowlPosition = 1;
+	match.teamScoreboard[1 - track].noOfBowlerBowled = 1;
+
 	localStorage.setItem("match", JSON.stringify(match));
-	view("play.html", loadScore);
+	document.querySelector(
+		"#main-container"
+	).innerHTML = `<div class="m-f5 fw-bold">Processing...</div>`;
+	view("play.html", loadScoreBoardModified);
 	setTimeout(() => {
 		if (
 			document
@@ -248,6 +282,11 @@ let setOpeners = () => {
 };
 
 let newMatch = () => {
+	if (!document.querySelector("#teamOneCard").classList.contains("d-none")) {
+		document.querySelector("#teamOneCard").classList.add("d-none");
+		document.querySelector("#teamTwoCard").classList.add("d-none");
+	}
+
 	localStorage.clear();
 	view("details.html", () => {});
 };

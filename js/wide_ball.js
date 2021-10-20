@@ -20,10 +20,7 @@ let wideAndRun = () => {
 	match.teamScoreboard[track].totalRunScored++;
 	match.teamScoreboard[track].runsFromExtras++;
 	match.teamScoreboard[track].totalRunScored += runTaken;
-	match.teamScoreboard[track].curOver.push(runTaken + "Wd");
-
-	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
+	match.teamScoreboard[track].curOver.push(runTaken + "wd");
 
 	// bowler profile
 	match.teamLineUp[1 - track][bowlerId].wideGiven++;
@@ -33,6 +30,7 @@ let wideAndRun = () => {
 	localStorage.setItem("match", JSON.stringify(match));
 	loadScore();
 };
+
 let wideAndWicket = (whichOut) => {
 	let match = JSON.parse(localStorage.getItem("match"));
 	let track = match.batting == match.teams[0] ? 0 : 1;
@@ -48,10 +46,9 @@ let wideAndWicket = (whichOut) => {
 	match.teamScoreboard[track].totalRunScored++;
 	match.teamScoreboard[track].runsFromExtras++;
 	match.teamScoreboard[track].wicketFall++;
-	match.teamScoreboard[track].curOver.push("WdW");
+	match.teamScoreboard[track].curOver.push("0wd W");
 
 	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
 	match.teamLineUp[track][batsmanId].gotOut = true;
 
 	// bowler profile
@@ -61,7 +58,6 @@ let wideAndWicket = (whichOut) => {
 	match.lastBatsman = match.onStrikeBatsman;
 
 	if (whichOut == "stumping") {
-		console.log("stumped out");
 		new bootstrap.Modal(document.querySelector("#stumped-out")).show();
 		let elevenOption = "";
 		match.teamLineUp[1 - track].forEach((e) => {
@@ -81,7 +77,6 @@ let wideAndWicket = (whichOut) => {
 			newBatsman();
 		});
 	} else {
-		console.log("hit wicket");
 		match.lastWicketFallMessage = `Last batsman: <b>${match.onStrikeBatsman}</b> hit wicket b <b>${match.onStrikeBowler}</b>`;
 		localStorage.setItem("match", JSON.stringify(match));
 		newBatsman();
@@ -121,11 +116,10 @@ let wideAndRunOut = () => {
 	// batting team scoreboard
 	match.teamScoreboard[track].totalRunScored++;
 	match.teamScoreboard[track].runsFromExtras++;
+	match.teamScoreboard[track].curOver.push("0wd");
 	// batsman profile
-	match.teamLineUp[track][batsmanId].hasBatted = true;
 	match.teamLineUp[track][batsmanId].ballFaced++;
 	// bowler profile
-	match.teamLineUp[1 - track][bowlerId].hasBowled = true;
 	match.teamLineUp[1 - track][bowlerId].runGiven++;
 	match.teamLineUp[1 - track][bowlerId].noBallGiven++;
 
@@ -133,9 +127,10 @@ let wideAndRunOut = () => {
 	loadScore();
 
 	if (runTaken > 0) {
-		console.log("taken", runTaken);
 		// batting team scoreboard
 		match.teamScoreboard[track].totalRunScored += runTaken;
+		match.teamScoreboard[track].curOver.pop();
+		match.teamScoreboard[track].curOver.push(runTaken + "wd");
 
 		if (runFrom == "bat") {
 			// batsman profile
@@ -157,8 +152,6 @@ let wideAndRunOut = () => {
 
 		localStorage.setItem("match", JSON.stringify(match));
 		loadScore();
-	} else {
-		console.log("not-taken", runTaken);
 	}
 
 	if (document.querySelector("#isRunOut").checked) {
@@ -170,13 +163,14 @@ let wideAndRunOut = () => {
 		}
 
 		match.lastBatsman = document.querySelector("#whoGotOutOption_wr").value;
-		console.log(match.lastBatsman);
 		batsmanId = match.teamLineUp[track].findIndex(
 			(playerObj) => playerObj.name == match.lastBatsman
 		);
 
 		// batting team scoreboard
 		match.teamScoreboard[track].wicketFall++;
+		match.teamScoreboard[track].curOver.pop();
+		match.teamScoreboard[track].curOver.push(runTaken + "wd W");
 		// batsman profile
 		match.teamLineUp[track][batsmanId].gotOut = true;
 
@@ -202,16 +196,26 @@ let wideAndRunOut = () => {
 			document.querySelector("#newBatsman").innerHTML = elevenOption;
 
 			document.querySelector("#setnewBatsman").addEventListener("click", () => {
+				let newPickedBatsman = document.querySelector("#newBatsman").value;
 				if (match.lastBatsman == match.onStrikeBatsman) {
 					if (document.querySelector("#onWhichEnd_wr").value == "bowlerEnd") {
 						[match.onStrikeBatsman, match.nonStrikeBatsman] = [
 							match.nonStrikeBatsman,
 							match.onStrikeBatsman,
 						];
-						match.nonStrikeBatsman =
-							document.querySelector("#newBatsman").value;
+						match.nonStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					} else {
-						match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+						match.onStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					}
 				} else {
 					if (document.querySelector("#onWhichEnd_wr").value == "keeperEnd") {
@@ -219,14 +223,22 @@ let wideAndRunOut = () => {
 							match.nonStrikeBatsman,
 							match.onStrikeBatsman,
 						];
-						match.onStrikeBatsman = document.querySelector("#newBatsman").value;
+						match.onStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					} else {
-						match.nonStrikeBatsman =
-							document.querySelector("#newBatsman").value;
+						match.nonStrikeBatsman = newPickedBatsman;
+						let batsmanId = match.teamLineUp[track].findIndex(
+							(playerObj) => playerObj.name == newPickedBatsman
+						);
+						match.teamLineUp[track][batsmanId].hasBatted = true;
+						match.teamLineUp[track][batsmanId].status = "not out";
 					}
 				}
 
-				console.log("sut");
 				localStorage.setItem("match", JSON.stringify(match));
 				loadScore();
 			});
@@ -239,7 +251,6 @@ let wideBall = () => {
 	if (wideDismissal == "no-wicket") {
 		wideAndRun();
 	} else if (wideDismissal == "run-out") {
-		console.log("wide-run-out");
 		wideBallRunOutModal();
 	} else {
 		wideAndWicket(wideDismissal);
