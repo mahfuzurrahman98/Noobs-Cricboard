@@ -1,0 +1,85 @@
+let view = (url, fun, params) => {
+	const xhr = new XMLHttpRequest();
+	xhr.open("GET", url);
+	xhr.send();
+	xhr.addEventListener("readystatechange", () => {
+		if (xhr.readyState == 4) {
+			document.querySelector("#main-container").innerHTML = xhr.responseText;
+			fun(params);
+		}
+	});
+};
+
+let loadHome = () => {
+	view("home.html", () => {});
+};
+
+let loadScoreBoardAdditional = () => {
+	let match = JSON.parse(localStorage.getItem("match"));
+
+	let options = {
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	};
+	let date_time = new Date(match.startTime);
+	date_time = date_time.toLocaleDateString("en-US", options);
+	document.querySelector(
+		"#toss-win"
+	).innerHTML = `${match.tossWonBy}, chose to ${match.tossDecision} | `;
+
+	let ii = match.runningInnings == 0 ? "1st" : "2nd";
+	document.querySelector(
+		"#innings-indicator"
+	).innerHTML = `${ii} innings running`;
+	document.querySelector(
+		"#match-heading"
+	).innerHTML = `${match.title} <span class="text-dark fw-bold">|</span> ${date_time} <span class="text-dark fw-bold">|</span> ${match.teams[0]} vs ${match.teams[1]} <span class="text-dark fw-bold">|</span> ${match.venue}`;
+
+	loadScore();
+
+	if (
+		!match.verdict ||
+		(match.verdict &&
+			!match.verdict.includes("won") &&
+			!match.verdict.includes("tied"))
+	) {
+		for (yy of document.querySelectorAll(".score-counter")) {
+			yy.classList.remove("d-none");
+		}
+	}
+};
+
+let runningMatch = () => {
+	if (localStorage.getItem("match") === null) {
+		view("details.html", () => {});
+	} else {
+		match = JSON.parse(localStorage.getItem("match"));
+		if (match.onStrikeBatsman) {
+			view("play.html", loadScoreBoardAdditional);
+		} else if (match.teamLineUp) {
+			view("openers.html", setDomOpeners);
+		} else if (match.tossWonBy) {
+			view("lineup.html", setDomLineUp);
+		} else if (match.title) {
+			view("toss.html", setDomToss);
+		}
+	}
+};
+
+let teamFullCard = (track) => {
+	view("scorecard.html", teamFullCardFun, track);
+};
+
+window.addEventListener("load", () => {
+	let match = JSON.parse(localStorage.getItem("match"));
+
+	if (match.title) {
+		document.querySelector("#running-match-nav").classList.remove("d-none");
+	}
+	if (match.onStrikeBatsman) {
+		document.querySelector("#score-nav").classList.remove("d-none");
+	}
+	loadHome();
+});
