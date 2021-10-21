@@ -303,7 +303,8 @@ let setOpeners = () => {
 
 let newMatch = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
-	if (!match.title) {
+	if (!match) {
+		view("details.html", () => {});
 		return;
 	}
 	new bootstrap.Modal(document.querySelector("#new-match-modal")).show();
