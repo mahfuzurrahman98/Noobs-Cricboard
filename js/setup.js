@@ -280,6 +280,9 @@ let setOpeners = () => {
 	match.teamLineUp[1 - track][bowlerId].bowlPosition = 1;
 	match.teamScoreboard[1 - track].noOfBowlerBowled = 1;
 
+	document.querySelector("#counter-nav").classList.remove("d-none");
+	document.querySelector("#score-nav").classList.remove("d-none");
+
 	localStorage.setItem("match", JSON.stringify(match));
 	document.querySelector(
 		"#main-container"
@@ -305,13 +308,11 @@ let newMatch = () => {
 	}
 	new bootstrap.Modal(document.querySelector("#new-match-modal")).show();
 	document.querySelector("#new-match-btn").addEventListener("click", () => {
-		if (!document.querySelector("#teamOneCard").classList.contains("d-none")) {
-			document.querySelector("#teamOneCard").classList.add("d-none");
-			document.querySelector("#teamTwoCard").classList.add("d-none");
-		}
-
 		localStorage.clear();
 		view("details.html", () => {});
+
+		document.querySelector("#counter-nav").classList.add("d-none");
+		document.querySelector("#score-nav").classList.add("d-none");
 	});
 };
 
