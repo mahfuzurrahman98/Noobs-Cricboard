@@ -75,10 +75,10 @@ let teamFullCard = (track) => {
 window.addEventListener("load", () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 
-	if (match.title) {
+	if (match && match.title) {
 		document.querySelector("#running-match-nav").classList.remove("d-none");
 	}
-	if (match.onStrikeBatsman) {
+	if (match && match.onStrikeBatsman) {
 		document.querySelector("#score-nav").classList.remove("d-none");
 	}
 	loadHome();
