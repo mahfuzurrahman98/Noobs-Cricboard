@@ -8,15 +8,30 @@ let matchDetailsSetup = () => {
 	let venue = document.querySelector("#venue").value;
 	let startTime = document.querySelector("#startTime").value;
 
-	if (
-		title == "" ||
-		teamOne == "" ||
-		teamTwo == "" ||
-		venue == "" ||
-		startTime == ""
-	) {
+	if (title == "") {
 		new bootstrap.Modal(document.querySelector("#error-modal")).show();
-		document.querySelector("#error-msg").innerHTML = "Empty field";
+		document.querySelector("#error-msg").innerHTML =
+			"Match title can't be empty!";
+		return;
+	} else if (teamOne == "" || teamTwo == "") {
+		new bootstrap.Modal(document.querySelector("#error-modal")).show();
+		document.querySelector("#error-msg").innerHTML =
+			"Team name can't be empty!";
+		return;
+	} else if (teamOne == teamTwo) {
+		new bootstrap.Modal(document.querySelector("#error-modal")).show();
+		document.querySelector("#error-msg").innerHTML =
+			"Team name can't be the same!";
+		return;
+	} else if (venue == "") {
+		new bootstrap.Modal(document.querySelector("#error-modal")).show();
+		document.querySelector("#error-msg").innerHTML =
+			"Match venue can't be empty!";
+		return;
+	} else if (startTime == "") {
+		new bootstrap.Modal(document.querySelector("#error-modal")).show();
+		document.querySelector("#error-msg").innerHTML =
+			"Match start time can't be empty!";
 		return;
 	}
 
@@ -58,14 +73,14 @@ let setDomLineUp = () => {
 	for (let i = 0; i < match.noOfPlayers; i++) {
 		playerNameOption1 += `<input type="text" id="team1-${
 			i + 1
-		}" class="form-control bg-dark text-white"><br>`;
+		}" class="form-control bg-dark text-white my-3">`;
 	}
 
 	let playerNameOption2 = `<p class="mt-3 h4 text-center text-success">${match.teams[1]}</p>`;
 	for (let i = 0; i < match.noOfPlayers; i++) {
 		playerNameOption2 += `<input type="text" id="team2-${
 			i + 1
-		}" class="form-control bg-dark text-white"><br>`;
+		}" class="form-control bg-dark text-white my-3">`;
 	}
 
 	document.querySelector("#teamOnePlayers").innerHTML = playerNameOption1;
@@ -88,10 +103,12 @@ let tossOverAndPlay = () => {
 		match.batting = match.tossWonBy;
 		match.fielding = match.tossLostBy;
 		match.firstBat = match.tossWonBy;
+		match.secondBat = match.tossLostBy;
 	} else {
 		match.batting = match.tossLostBy;
 		match.fielding = match.tossWonBy;
-		match.secondBat = match.tossLostBy;
+		match.firstBat = match.tossLostBy;
+		match.secondBat = match.tossWonBy;
 	}
 	match.noOfOvers = document.querySelector("#overs").value;
 	match.noOfPlayers = document.querySelector("#players").value;
@@ -282,13 +299,20 @@ let setOpeners = () => {
 };
 
 let newMatch = () => {
-	if (!document.querySelector("#teamOneCard").classList.contains("d-none")) {
-		document.querySelector("#teamOneCard").classList.add("d-none");
-		document.querySelector("#teamTwoCard").classList.add("d-none");
+	let match = JSON.parse(localStorage.getItem("match"));
+	if (!match.title) {
+		return;
 	}
+	new bootstrap.Modal(document.querySelector("#new-match-modal")).show();
+	document.querySelector("#new-match-btn").addEventListener("click", () => {
+		if (!document.querySelector("#teamOneCard").classList.contains("d-none")) {
+			document.querySelector("#teamOneCard").classList.add("d-none");
+			document.querySelector("#teamTwoCard").classList.add("d-none");
+		}
 
-	localStorage.clear();
-	view("details.html", () => {});
+		localStorage.clear();
+		view("details.html", () => {});
+	});
 };
 
 let showHideRuns = () => {

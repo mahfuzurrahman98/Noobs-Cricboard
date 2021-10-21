@@ -266,6 +266,23 @@ let loadScore = () => {
 let teamFullCardFun = (track) => {
 	let match = JSON.parse(localStorage.getItem("match"));
 
+	document.querySelector("#teamOneName").innerHTML = match.teams[0].substring(
+		0,
+		10
+	);
+	document.querySelector("#teamTwoName").innerHTML = match.teams[1].substring(
+		0,
+		10
+	);
+
+	if (track == 0) {
+		document.querySelector("#teamOneCard").classList.add("bg-dark");
+		document.querySelector("#teamOneName").classList.add("text-white");
+	} else {
+		document.querySelector("#teamTwoCard").classList.add("bg-dark");
+		document.querySelector("#teamTwoName").classList.add("text-white");
+	}
+
 	let displayBatsman = "";
 	let displayBowler = "";
 	let yet_to_bat = "";
@@ -363,9 +380,7 @@ let teamFullCardFun = (track) => {
 	if (match.teams[track] != match.fielding && match.runningInnings == 1) {
 		// second innings is running & this team is fielding
 		socreRateOverShow += `Target: ${
-			match.teamScoreboard[1 - track].totalRunScored -
-			match.teamScoreboard[track].totalRunScored +
-			1
+			match.teamScoreboard[1 - track].totalRunScored + 1
 		} <span class="text-success">|</span> `;
 	}
 
@@ -375,8 +390,12 @@ let teamFullCardFun = (track) => {
 		match.noOfOvers
 	}) <span class="text-success">|</span> Run rate: ${crr}`;
 
-	if (match.teams[track] != match.fielding && match.runningInnings == 1) {
-		// second innings is running & this team is fielding
+	if (
+		match.teams[track] == match.batting &&
+		match.runningInnings == 1 &&
+		match.verdictFlag < 4
+	) {
+		// second innings is running & this team is battin
 		let runsNeeded =
 			match.teamScoreboard[1 - track].totalRunScored -
 			match.teamScoreboard[track].totalRunScored +

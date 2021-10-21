@@ -29,7 +29,7 @@
                     <a class="nav-link active rounded-pill text-primary" aria-current="page" href="javascript:void(0)"
                         onclick="newMatch()">
                         <span>
-                            <img src="images/new-match.png" width="35" height="35" alt="">
+                            <img src="images/running-match.png" width="35" height="35" alt="">
                         </span>
                         <span> New match</span>
                     </a>
@@ -38,21 +38,18 @@
                     <a class="nav-link active rounded-pill text-success" aria-current="page" href="javascript:void(0)"
                         onclick="runningMatch()">
                         <span>
-                            <img src="images/running-match.png" width="35" height="35" alt="">
+                            <img src="images/counter.png" width="25" height="25" alt="">
                         </span>
-                        <span> Running match</span>
+                        <span> Score counter</span>
                     </a>
                 </li>
-                <li class="d-none nav-item mx-auto mx-lg-1 my-1 my-lg-0 shadow shadow-lg px-3 pt-lg-1 rounded-pill"
-                    id="teamOneCard">
-                    <a id="teamOneName" class="nav-link active rounded-pill text-success" aria-current="page"
-                        href="javascript:void(0)" onclick="teamFullCard(0)">
-                    </a>
-                </li>
-                <li class="d-none nav-item mx-auto mx-lg-1 my-1 my-lg-0 shadow shadow-lg px-3 pt-lg-1 rounded-pill"
-                    id="teamTwoCard">
-                    <a id="teamTwoName" class="nav-link active rounded-pill text-success" aria-current="page"
-                        href="javascript:void(0)" onclick="teamFullCard(1)">
+                <li class="nav-item mx-auto mx-lg-1 my-1 my-lg-0 shadow shadow-lg px-3 pt-lg-1 rounded-pill">
+                    <a class="nav-link active rounded-pill text-success" aria-current="page" href="javascript:void(0)"
+                        onclick="teamFullCard(0)">
+                        <span>
+                            <img src="images/scoreboard.png" width="25" height="25" alt="">
+                        </span>
+                        <span> Full scorecard</span>
                     </a>
                 </li>
             </ul>
@@ -93,6 +90,23 @@
                 </div>
                 <div class="modal-body">
                     <div id="error-msg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="new-match-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    A match is still running, Are you sure want to discard this match and start a new one?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="new-match-btn" data-bs-dismiss="modal">Yes</button>
                 </div>
             </div>
         </div>

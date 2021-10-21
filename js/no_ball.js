@@ -60,7 +60,7 @@ let noBall = () => {
 	// batting team scoreboard
 	match.teamScoreboard[track].totalRunScored++;
 	match.teamScoreboard[track].runsFromExtras++;
-	match.teamScoreboard[track].curOver.push(1 + "nb");
+	match.teamScoreboard[track].curOver.push("0nb");
 	// batsman profile
 	match.teamLineUp[track][batsmanId].ballFaced++;
 	// bowler profile

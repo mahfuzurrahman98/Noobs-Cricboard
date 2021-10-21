@@ -13,18 +13,6 @@ let view = (url, fun, params) => {
 let loadScoreBoardModified = () => {
 	let match = JSON.parse(localStorage.getItem("match"));
 
-	document.querySelector("#teamOneCard").classList.remove("d-none");
-	document.querySelector("#teamTwoCard").classList.remove("d-none");
-
-	document.querySelector("#teamOneName").innerHTML = match.teams[0].substring(
-		0,
-		10
-	);
-	document.querySelector("#teamTwoName").innerHTML = match.teams[1].substring(
-		0,
-		10
-	);
-
 	let options = {
 		weekday: "long",
 		year: "numeric",
@@ -76,7 +64,7 @@ let runningMatch = () => {
 };
 
 let teamFullCard = (track) => {
-	view("team_full_card.html", teamFullCardFun, track);
+	view("scorecard.html", teamFullCardFun, track);
 };
 
 window.addEventListener("load", () => {
