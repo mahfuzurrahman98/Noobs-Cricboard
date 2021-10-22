@@ -239,6 +239,9 @@ let loadScore = () => {
 	for (let j of match.teamScoreboard[track].curOver) {
 		let newBowl = document.createElement("span");
 		let bowl_btn_cls = "btn-outline-primary";
+		if (j.includes("0")) {
+			bowl_btn_cls = "btn-outline-secondary";
+		}
 		if (j.includes("b")) {
 			bowl_btn_cls = "btn-outline-dark";
 		}
@@ -254,6 +257,9 @@ let loadScore = () => {
 		if (j.includes("6")) {
 			bowl_btn_cls = "btn-outline-purple";
 		}
+		if (j.includes("W")) {
+			bowl_btn_cls = "btn-outline-danger";
+		}
 		newBowl.classList.add("btn", bowl_btn_cls, "rounded-pill", "mx-1");
 		newBowl.innerText = j;
 		document.querySelector("#over").appendChild(newBowl);
@@ -263,7 +269,7 @@ let loadScore = () => {
 	match = JSON.parse(localStorage.getItem("match"));
 };
 
-let teamFullCardFun = (track) => {
+let loadFullScorecard = (track) => {
 	let match = JSON.parse(localStorage.getItem("match"));
 
 	document.querySelector("#teamOneName").innerHTML = match.teams[0].substring(
@@ -314,7 +320,19 @@ let teamFullCardFun = (track) => {
 			<td>${batsman.ballDotted}</td>
 			<td>${batsman.fourHitted}</td>
 			<td>${batsman.sixHitted}</td>
-			<td>${batsmanStrikeRate}</td></tr>`;
+			<td>${batsmanStrikeRate}</td><td>`;
+
+		if (batsman.role == "bat") {
+			displayBatsman += `<img src="assets/images/batsman.png" width="15" height="15">`;
+		} else if (batsman.role == "bowl") {
+			displayBatsman += `<img src="assets/images/bowler.png" width="15" height="15">`;
+		} else if (batsman.role == "all_r") {
+			displayBatsman += `<img src="assets/images/all-rounder.png" width="15" height="15">`;
+		} else if (batsman.role == "wk") {
+			displayBatsman += `<img src="assets/images/wicket-keeper.png" width="15" height="15">`;
+		}
+
+		displayBatsman += "</td></tr>";
 	}
 
 	let bowlerArray = match.teamLineUp[1 - track];

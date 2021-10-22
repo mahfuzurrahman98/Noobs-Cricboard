@@ -11,7 +11,25 @@ let view = (url, fun, params) => {
 };
 
 let loadHome = () => {
-	view("home.html", () => {});
+	view("home.html", () => {
+		let match = JSON.parse(localStorage.getItem("match"));
+
+		if (match && match.title) {
+			document.querySelector("#running-match-nav").classList.remove("d-none");
+		}
+		if (match && match.onStrikeBatsman) {
+			document.querySelector("#score-nav").classList.remove("d-none");
+			document.querySelector("#home-rm").classList.remove("d-none");
+		}
+	});
+};
+
+let loadAbout = () => {
+	view("about.html", () => {});
+};
+
+let loadManual = () => {
+	view("manual.html", () => {});
 };
 
 let loadScoreBoardAdditional = () => {
@@ -58,10 +76,12 @@ let runningMatch = () => {
 		match = JSON.parse(localStorage.getItem("match"));
 		if (match.onStrikeBatsman) {
 			view("play.html", loadScoreBoardAdditional);
-		} else if (match.teamLineUp) {
+		} else if (match.teamLineUp[1].length > 0) {
 			view("openers.html", setDomOpeners);
+		} else if (match.teamLineUp[0].length > 0) {
+			view("lineup_1.html", setDomLineUp, 1);
 		} else if (match.tossWonBy) {
-			view("lineup.html", setDomLineUp);
+			view("lineup_0.html", setDomLineUp, 0);
 		} else if (match.title) {
 			view("toss.html", setDomToss);
 		}
@@ -69,17 +89,9 @@ let runningMatch = () => {
 };
 
 let teamFullCard = (track) => {
-	view("scorecard.html", teamFullCardFun, track);
+	view("scorecard.html", loadFullScorecard, track);
 };
 
 window.addEventListener("load", () => {
-	let match = JSON.parse(localStorage.getItem("match"));
-
-	if (match && match.title) {
-		document.querySelector("#running-match-nav").classList.remove("d-none");
-	}
-	if (match && match.onStrikeBatsman) {
-		document.querySelector("#score-nav").classList.remove("d-none");
-	}
 	loadHome();
 });
