@@ -76,9 +76,9 @@ let runningMatch = () => {
 		match = JSON.parse(localStorage.getItem("match"));
 		if (match.onStrikeBatsman) {
 			view("play.html", loadScoreBoardAdditional);
-		} else if (match.teamLineUp[1].length > 0) {
+		} else if (match.teamLineUp && match.teamLineUp[1].length > 0) {
 			view("openers.html", setDomOpeners);
-		} else if (match.teamLineUp[0].length > 0) {
+		} else if (match.teamLineUp && match.teamLineUp[0].length > 0) {
 			view("lineup_1.html", setDomLineUp, 1);
 		} else if (match.tossWonBy) {
 			view("lineup_0.html", setDomLineUp, 0);
