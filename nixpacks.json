@@ -1,0 +1,14 @@
+{
+  "providers": ["node"],
+  "phases": {
+    "build": {
+      "cmds": ["npm run build"]
+    }
+  },
+  "start": {
+    "cmd": "node scripts/start.js"
+  },
+  "static": {
+    "publishDir": "dist"
+  }
+}
